@@ -1,0 +1,90 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="bg-gray-100 p-10 font-poppins font-normal">
+
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-xl p-8">
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Edit Product</h2>
+
+        <form action="/edit_product/{{ product.id }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+            <!-- Product Name -->
+            <div>
+                <label class="block text-gray-700 font-medium">Product Name</label>
+                <input type="text" name="name" value="{{ product.name }}" class="w-full border p-3 rounded-lg mt-2">
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label class="block text-gray-700 font-medium">Category</label>
+                <select name="category" class="w-full border p-3 rounded-lg mt-2">
+                    <option value="face" {% if product.category=='face' %}selected{% endif %}>Face Care</option>
+                    <option value="hair" {% if product.category=='hair' %}selected{% endif %}>Hair Care</option>
+                    <option value="body" {% if product.category=='body' %}selected{% endif %}>Body Care</option>
+                </select>
+            </div>
+
+            <!-- Price -->
+            <div>
+                <label class="block text-gray-700 font-medium">Price (₹)</label>
+                <input type="number" name="price" value="{{ product.price }}" class="w-full border p-3 rounded-lg mt-2">
+            </div>
+
+            <!-- Image URL -->
+            <div>
+                <label class="block text-gray-700 font-medium">Image URL</label>
+                <input type="text" name="image_url" value="{{ product.image_url }}" class="w-full border p-3 rounded-lg mt-2">
+
+                <!-- Current image preview -->
+                <img src="{{ product.image_url }}" class="w-40 rounded-lg mt-3 shadow" alt="product image">
+            </div>
+
+            <p class="text-center text-gray-600 text-sm">OR Upload New Image</p>
+
+            <!-- Upload Image -->
+            <div>
+                <label class="block text-gray-700 font-medium">Upload New Image</label>
+                <input type="file" name="image_file" accept="image/*"
+                    class="w-full border p-3 rounded-lg mt-2 bg-gray-50">
+            </div>
+
+            <!-- =============== NEW FIELDS FOR UPDATE =============== -->
+
+            <!-- Short Description -->
+            <div>
+                <label class="block text-gray-700 font-medium">Short Description</label>
+                <textarea name="description" rows="2"
+                    class="w-full border p-3 rounded-lg mt-2">{{ product.description }}</textarea>
+            </div>
+
+            <!-- Product Details -->
+            <div>
+                <label class="block text-gray-700 font-medium">Product Details</label>
+                <textarea name="details" rows="4"
+                    class="w-full border p-3 rounded-lg mt-2">{{ product.details }}</textarea>
+            </div>
+
+            <!-- Refund Policy
+            <div>
+                <label class="block text-gray-700 font-medium">Refund Policy</label>
+                <textarea name="refund_policy" rows="3"
+                    class="w-full border p-3 rounded-lg mt-2">{{ product.refund_policy }}</textarea>
+            </div>
+
+            
+            <div>
+                <label class="block text-gray-700 font-medium">Shipping Info</label>
+                <textarea name="shipping_info" rows="3"
+                    class="w-full border p-3 rounded-lg mt-2">{{ product.shipping_info }}</textarea>
+            </div> -->
+
+            <!-- =============== END NEW FIELDS =============== -->
+
+            <button class="w-full bg-green-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-green-700">
+                Update Product
+            </button>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}

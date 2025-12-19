@@ -1,0 +1,38 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="p-10 font-normal font-poppins">
+
+    <h1 class="text-3xl font-bold mb-6">Contact Messages</h1>
+
+    <div class="overflow-x-auto bg-white shadow rounded-xl">
+        <table class="min-w-full text-left">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="p-3">Name</th>
+                    <th class="p-3">Gender</th>
+                    <th class="p-3">Email</th>
+                    <th class="p-3">Phone</th>
+                    <th class="p-3">Message</th>
+                    <th class="p-3">Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for m in messages %}
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="p-3">{{ m.name }}</td>
+                    <td class="p-3">{{ m.gender }}</td>
+                    <td class="p-3">{{ m.email }}</td>
+                    <td class="p-3">{{ m.phone }}</td>
+                    <td class="p-3">{{ m.message }}</td>
+                    <td class="p-3">{{ m.created_at.strftime('%d-%m-%Y') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

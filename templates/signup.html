@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Signup -{% endblock title %}
+{% block body %}
+<div class="flex items-center justify-center min-h-screen font-poppins font-normal">
+
+    <div class="bg-white border border-gray-200 p-10 rounded-xl w-[380px] shadow-xl">
+
+        <h1 class="text-center text-4xl font-bold mb-6 text-[#ae3a00]">Sehatra</h1>
+        <p class="text-center text-gray-600 mb-4">Create your account to continue</p>
+
+        {% if error %}
+        <div class="bg-red-500 text-white p-3 rounded mb-3 text-center">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div class="bg-green-500 text-white p-3 rounded mb-3 text-center">
+            {{ success }}
+        </div>
+        {% endif %}
+
+
+
+        <form action="/signup" method="POST" class="space-y-4">
+
+            <input type="text" name="name" placeholder="Full Name"
+                class="w-full p-3 rounded border border-gray-300 outline-none" required>
+
+            <input type="text" name="phone" placeholder="phone"
+                class="w-full p-3 rounded border border-gray-300 outline-none" required>
+
+            <input type="email" name="email" placeholder="Email"
+                class="w-full p-3 rounded border border-gray-300 outline-none" required>
+
+            <input type="password" name="password" placeholder="Password"
+                class="w-full p-3 rounded border border-gray-300 outline-none" required>
+
+            <button class="w-full bg-[#ae3a00] hover:bg-[#8e3000] p-3 rounded text-white font-semibold">
+                Sign up
+            </button>
+        </form>
+
+        <div class="text-center mt-5 text-gray-600">
+            Already have an account?
+            <a href="/login" class="text-[#ae3a00] hover:underline">Log in</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

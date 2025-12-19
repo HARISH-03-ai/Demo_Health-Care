@@ -1,0 +1,98 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="bg-gray-100 p-10 font-poppins font-normal">
+
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-xl p-8">
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Add New Product</h2>
+        
+        <form action="/add_product" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+            <!-- Product Name -->
+            <div>
+                <label class="block text-gray-700 font-medium">Product Name</label>
+                <input type="text" name="name" required class="w-full border p-3 rounded-lg mt-2">
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label class="block text-gray-700 font-medium">Category</label>
+                <select name="category" required class="w-full border p-3 rounded-lg mt-2">
+                    <option value="face">Face Care</option>
+                    <option value="hair">Hair Care</option>
+                    <option value="body">Body Care</option>
+                </select>
+            </div>
+
+            <!-- Price -->
+            <div>
+                <label class="block text-gray-700 font-medium">Price (₹)</label>
+                <input type="number" name="price" step="0.01" required class="w-full border p-3 rounded-lg mt-2">
+            </div>
+
+            <!-- Image URL -->
+            <div>
+                <label class="block text-gray-700 font-medium">Image URL</label>
+                <input type="text" name="image_url" placeholder="https://example.com/product.jpg"
+                    class="w-full border p-3 rounded-lg mt-2">
+            </div>
+
+            <p class="text-center text-gray-600 text-sm">OR</p>
+
+            <!-- Upload Image -->
+            <div>
+                <label class="block text-gray-700 font-medium">Upload Image</label>
+                <input type="file" name="image_file" accept="image/*"
+                    class="w-full border p-3 rounded-lg mt-2 bg-gray-50">
+            </div>
+
+
+
+
+            <!-- ====================== NEW FIELDS START ====================== -->
+
+            <!-- Short Description -->
+            <div>
+                <label class="block text-gray-700 font-medium">Short Description</label>
+                <textarea name="description" rows="2"
+                    placeholder="Short product description..."
+                    class="w-full border p-3 rounded-lg mt-2"></textarea>
+            </div>
+
+            <!-- Detailed Information -->
+            <div>
+                <label class="block text-gray-700 font-medium">Product Details</label>
+                <textarea name="details" rows="4"
+                    placeholder="Full product details, usage instructions, ingredients, benefits..."
+                    class="w-full border p-3 rounded-lg mt-2"></textarea>
+            </div>
+
+            <!-- Refund Policy
+            <div>
+                <label class="block text-gray-700 font-medium">Refund Policy</label>
+                <textarea name="refund_policy" rows="3"
+                    placeholder="Your return & refund policy..."
+                    class="w-full border p-3 rounded-lg mt-2"></textarea>
+            </div>
+
+            Shipping Info
+            <div>
+                <label class="block text-gray-700 font-medium">Shipping Info</label>
+                <textarea name="shipping_info" rows="3"
+                    placeholder="Shipping time, delivery locations, charges, etc."
+                    class="w-full border p-3 rounded-lg mt-2"></textarea>
+            </div> -->
+
+            <!-- ====================== NEW FIELDS END ====================== -->
+
+
+
+            <!-- Submit Button -->
+            <button class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
+                Add Product
+            </button>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}

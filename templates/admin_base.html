@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - SEHATRA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Smooth transitions for sidebar */
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 flex">
+
+    <!-- MOBILE MENU BUTTON -->
+    <button id="menu-btn" class=" z-50 lg:hidden fixed top-5 left-5 bg-gray-900 text-white p-3 rounded-lg shadow">
+        ☰
+    </button>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar"
+        class="sidebar font-poppins z-40 font-semibold fixed lg:static left-0 top-0 min-h-screen w-64 bg-gray-900 text-white p-6 shadow-xl transform -translate-x-full lg:translate-x-0">
+
+        <h2 class="text-3xl font-bold mb-10 text-center tracking-wide">SEHATRA</h2>
+
+        <ul class="space-y-4 text-lg">
+
+            <li>
+                <a href="/admin_dashboard" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="/add_product" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fa-solid fa-plus"></i> Add Product
+                </a>
+            </li>
+
+            <li>
+                <a href="/manage_products" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fa-solid fa-box"></i> Manage Products
+                </a>
+            </li>
+
+            <li>
+                <a href="/edit_hero" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fa-solid fa-image"></i> Hero Section
+                </a>
+            </li>
+
+            <li>
+                <a href="/contact_messages" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fa-solid fa-envelope"></i> Messages
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin_reviews" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fa-solid fa-envelope"></i> Manage Reviews
+                </a>
+            </li>
+
+            <li>
+                <a href="/blocked_users" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fa-solid fa-envelope"></i> Blocked Users
+                </a>
+            </li>
+
+            <li>
+                <a href="/add-highlight" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700">
+                    <i class="fa-solid fa-video"></i> Add Highlight
+                </a>
+            </li>
+
+            <li>
+                <a href="/manage-highlights" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700">
+                    <i class="fa-solid fa-video"></i> Manage Highlight
+                </a>
+            </li>
+
+            <li>
+                <a href="/" class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-700 bg-red-600 transition mt-10">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 ml-0 lg:ml-64 p-10 transition-all">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+
+    <!-- MOBILE SIDEBAR TOGGLE SCRIPT -->
+    <script>
+        const menuBtn = document.getElementById("menu-btn");
+        const sidebar = document.getElementById("sidebar");
+
+        menuBtn.addEventListener("click", () => {
+            if (sidebar.classList.contains("-translate-x-full")) {
+                sidebar.classList.remove("-translate-x-full");
+            } else {
+                sidebar.classList.add("-translate-x-full");
+            }
+        });
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+
+</html>

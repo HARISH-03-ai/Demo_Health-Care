@@ -1,0 +1,67 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="bg-gray-100 p-6 font-poppins font-normal">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-8">
+        <h2 class="text-3xl font-semibold mb-6 text-gray-800 text-center">
+            Update Hero Section
+        </h2>
+
+        <form action="/update_hero" method="POST" enctype="multipart/form-data" class="space-y-6">
+
+            <!-- IMAGE URL -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Hero Image URL</label>
+                <input type="text" name="image_url" placeholder="https://example.com/image.jpg"
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <!-- OR UPLOAD IMAGE -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Upload Image</label>
+                <input type="file" name="image_file" accept="image/*"
+                    class="w-full border border-gray-300 rounded-lg p-3 bg-gray-50">
+                <p class="text-sm text-gray-500 mt-1">*You can upload JPG/PNG/WebP files.</p>
+            </div>
+
+            <!-- PRODUCT NAME -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Product Name</label>
+                <input type="text" name="product_name" placeholder="Enter product name"
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <!-- PRODUCT DESCRIPTION -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Product Description</label>
+                <textarea name="product_desc" placeholder="Short description…"
+                    class="w-full border border-gray-300 rounded-lg p-3 h-24 resize-none focus:ring-2 focus:ring-blue-400"></textarea>
+            </div>
+
+            <!-- OFFER LINE -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Offer Line</label>
+                <input type="text" name="offer_text" placeholder="Free shipping / Discount / etc."
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <div>
+                <label>Select Product for Shop Now</label>
+                <select name="product_id" class="w-full border p-3 rounded-lg mt-2">
+                    {% for p in products %}
+                    <option value="{{ p.id }}" {% if hero.product_id==p.id %}selected{% endif %}>{{ p.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <!-- SAVE BUTTON -->
+            <button type="submit"
+                class="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition">
+                Save Changes
+            </button>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

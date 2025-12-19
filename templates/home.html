@@ -1,0 +1,474 @@
+{% extends 'base.html' %}
+{% block title %}Home -{% endblock title %}
+{% block body %}
+
+<!-- NAVBAR -->
+<nav class="fixed top-5 left-1/2 -translate-x-1/2 w-[90%] bg-[#eeeeee] rounded-3xl md:p-4 p-2 shadow z-50 font-poppins font-normal">
+
+    <!-- ========== DESKTOP NAVBAR (lg+) ========== -->
+    <div class="hidden lg:flex justify-between items-center">
+
+        <!-- Logo + Menu -->
+        <div class="flex items-center gap-10">
+            <div class="flex items-center gap-2">
+                <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-7 h-7">
+                <h3 class="text-[#2d5143] font-bold text-2xl font-poppins">SEHATRA</h3>
+            </div>
+
+            <ul class="flex gap-8 text-[#2d5143]">
+                <a href="/">
+                    <li class="hover:text-orange-500">Home</li>
+                </a>
+                <a href="/product">
+                    <li class="hover:text-orange-500">Product</li>
+                </a>
+                <a href="/about">
+                    <li class="hover:text-orange-500">About</li>
+                </a>
+                <a href="/contact">
+                    <li class="hover:text-orange-500">Contact</li>
+                </a>
+                <a href="/highlight">
+                    <li class="hover:text-orange-500">Highlights</li>
+                </a>
+            </ul>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <div onclick="window.location.href='/search'"
+                class="hidden lg:flex items-center bg-[#eeeeee] px-3 py-1 rounded-xl hover:bg-orange-200 gap-3 cursor-pointer">
+                <p class="text-[#2d5143] text-base">Search</p>
+                <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#2d5143"
+                    style="width:20px;height:20px"></lord-icon>
+            </div>
+
+            {% if session.get('user_id') %}
+            <!-- LOGGED IN: PROFILE BUTTON -->
+            <div class="relative group">
+                <button id="profileBtn"
+                    class="flex items-center gap-2 bg-[#2d5143] text-white px-4 py-2 rounded-full hover:bg-[#234236] transition">
+                    <img loading="lazy" alt="profile pic" src="{{ session.get('profile_pic', 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png') }}"
+                        class="w-6 h-6 rounded-full object-cover">
+                    <span class="font-semibold">{{ session.get('user_name') }}</span>
+                    <span class="text-xl">▼</span>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div id="profileMenu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-[#eeeeee] text-[#2d5143] rounded-xl shadow-xl border border-gray-200">
+
+                    <a href="/profile" class="block px-4 py-3 hover:bg-gray-100 rounded-t-xl">
+                        👤 My Profile
+                    </a>
+
+                    <a href="/logout" class="block px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-b-xl">
+                        🚪 Logout
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- NOT LOGGED IN -->
+            <div class="flex items-center gap-4">
+                <a href="/login">
+                    <button
+                        class="border border-[#2d5143] text-[#2d5143] px-4 py-2 rounded-lg hover:bg-[#8c2f00] hover:text-white font-semibold">
+                        Login
+                    </button>
+                </a>
+
+                <a href="/signup">
+                    <button class="bg-[#ae3a00] text-white px-4 py-2 rounded-lg hover:bg-[#8c2f00] font-semibold">
+                        Sign Up
+                    </button>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== TABLET NAVBAR (md → lg) ========== -->
+    <div class="hidden md:flex lg:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-7 h-7">
+            <h3 class="text-[#2d5143] font-bold text-2xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#2d5143"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <!-- Hamburger -->
+            <button id="menuBtnTab" class="md:text-3xl text-[#2d5143]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== MOBILE NAVBAR (sm) ========== -->
+    <div class="flex md:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-5 h-5">
+            <h3 class="text-[#2d5143] font-bold text-xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#2d5143"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <button id="menuBtn" class="text-2xl text-[#2d5143]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- MOBILE DROPDOWN MENU -->
+    <div id="mobileMenu"
+        class="hidden flex-col mt-4 bg-[#dfdede] rounded-2xl p-4 text-[14px] text-[#2d5143]">
+
+        <a href="/">
+            <p class="py-2 hover:text-orange-500">Home</p>
+        </a>
+        <a href="/product">
+            <p class="py-2 hover:text-orange-500">Product</p>
+        </a>
+        <a href="/about">
+            <p class="py-2 hover:text-orange-500">About</p>
+        </a>
+        <a href="/contact">
+            <p class="py-2 hover:text-orange-500">Contact</p>
+        </a>
+        <a href="/highlight">
+            <p class="py-2 hover:text-orange-500">Highlights</p>
+        </a>
+
+        <div class="border-t border-gray-300 my-2"></div>
+
+        {% if session.get('user_id') %}
+        <a href="/profile">
+            <p class="py-2 hover:text-orange-500">👤 My Profile</p>
+        </a>
+        <a href="/logout">
+            <p class="py-2 text-red-600 hover:text-red-700">🚪 Logout</p>
+        </a>
+
+        {% else %}
+        <a href="/login">
+            <p class="py-2 hover:text-orange-500">Login</p>
+        </a>
+        <a href="/signup">
+            <p class="py-2 hover:text-orange-500">Sign Up</p>
+        </a>
+        {% endif %}
+    </div>
+
+</nav>
+
+<!-- HERO SECTION LATEST PRODUCT DISPLAY WITH OFFER -->
+<div id="hero" class="hero opacity-0 translate-y-10 w-full min-h-screen flex justify-center items-center font-poppins font-normal">
+    <div class="imag-hero w-[95%] h-[98vh]">
+        <img loading="lazy" src="{{ hero.image_url }}" alt="hero image" class="object-cover w-full h-full rounded-2xl">
+    </div>
+
+    <!-- NEW MODERN HERO INFO BOX -->
+    <div class="hero-info-box 
+    absolute 
+    bottom-6 sm:bottom-10 md:bottom-16
+    left-1/2 md:left-20
+    -translate-x-1/2 md:translate-x-0
+    backdrop-blur-xl bg-white/20 border border-white/30 
+    shadow-[0_8px_30px_rgba(0,0,0,0.15)]
+    rounded-2xl 
+    p-2 sm:p-4 md:p-6
+    w-[90%] sm:w-[70%] md:w-[380px]
+    text-center md:text-left
+    transition-all duration-300">
+
+        <h1 class="text-white font-poppins font-bold 
+        text-xl sm:text-2xl md:text-4xl leading-tight">
+            {{ hero.product_name }}
+        </h1>
+
+        <p class="text-white/90 mt-1 
+        text-xs sm:text-sm md:text-lg font-poppins font-normal">
+            {{ hero.product_desc }}
+        </p>
+
+        <a href="/product/{{ hero.product_id }}">
+            <button class="mt-4 bg-[#E1F861] text-[#2d5143] 
+            px-2 py-1 sm:px-6 sm:py-2 md:px-8 md:py-2
+            rounded-xl border border-black 
+            font-poppins
+            hover:bg-white hover:text-[#2d5143] 
+            transition duration-300 text-[14px] font-semibold">
+                Shop Now
+            </button>
+        </a>
+
+    </div>
+
+
+
+
+
+    <div
+        class="offer-banner bg-[#E1F861] md:h-10 h-6 w-[95%] absolute -bottom-2 rounded-b-xl font-bold font-poppins flex items-center md:text-xl text-[12px] overflow-hidden">
+
+        <div class="flex w-[200%] animate-ticker whitespace-nowrap text-[#2d5143]">
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+            <span class="px-6" aria-hidden="true">{{ hero.offer_text }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- CATEGORY SECTION -->
+<div class="category min-h-screen">
+
+    <!-- Heading Row -->
+    <div class="category-head flex items-center justify-between pt-8 md:pt-16 px-3 md:px-16">
+        <h1 class="font-bold font-poppins reveal text-[16px] sm:text-xl md:text-4xl">
+            shop by category
+        </h1>
+
+        <a href="/product">
+            <button class="text-black md:px-10 md:py-2 px-4 py-1 rounded-xl hover:bg-[#E1F861] border border-black 
+                font-poppins font-bold reveal text-[10px] md:text-base">
+                Shop Now
+            </button>
+        </a>
+    </div>
+
+    <!-- CARDS WRAPPER -->
+    <div class="category-cards flex flex-col md:flex-row items-center justify-center gap-6 
+                px-3 md:px-6 py-6">
+
+        <!-- ===== FACE CARD ===== -->
+        <div class="category-card-one reveal bg-[#cdbaba] w-[90%] md:w-1/3 rounded-xl hover:bg-[#a0c8ff] 
+                    flex flex-col items-center p-3 md:p-6 relative h-auto">
+
+            <a href="/product?category=face">
+                <div class="rounded-xl overflow-hidden w-full aspect-[3/4]
+                             h-[240px]
+                            sm:w-[300px] sm:h-[280px]
+                            md:w-full md:h-[250px] lg:h-[350px]">
+
+                    <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_3f664c12d6cf450fa8124bb718c24fa8~mv2.jpg"
+                        class="object-cover w-full h-full rounded-xl" alt="face image"/>
+                </div>
+            </a>
+
+            <div class="category-name mt-3">
+                <a href="/product?category=face">
+                    <button class="text-black px-6 py-1 md:px-10 md:py-2 rounded-xl border border-black 
+                        font-bold font-poppins text-lg md:text-3xl hover:bg-[#E1F861]">
+                        face
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== BODY CARD ===== -->
+        <div class="category-card-one reveal bg-[#cdbaba] w-[90%] md:w-1/3 rounded-xl hover:bg-orange-400 
+                    flex flex-col items-center p-3 md:p-6 relative h-auto">
+
+            <a href="/product?category=body">
+                <div class="rounded-xl overflow-hidden w-full aspect-[3/4]
+                             h-[240px]
+                            sm:w-[300px] sm:h-[280px]
+                            md:w-full md:h-[250px] lg:h-[350px]">
+
+                    <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_17aea40f0fe74fa0bd04e5052b900a9b~mv2.jpg"
+                        class="object-cover w-full h-full rounded-xl" alt="body image"/>
+                </div>
+            </a>
+
+            <div class="category-name mt-3">
+                <a href="/product?category=body">
+                    <button class="text-black px-6 py-1 md:px-10 md:py-2 rounded-xl border border-black 
+                        font-bold font-poppins text-lg md:text-3xl hover:bg-[#a0c8ff]">
+                        body
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== HAIR CARD ===== -->
+        <div class="category-card-one reveal bg-[#cdbaba] w-[90%] md:w-1/3 rounded-xl hover:bg-[#E1F861]
+                    flex flex-col items-center p-3 md:p-6 relative h-auto">
+
+            <a href="/product?category=hair">
+                <div class="rounded-xl overflow-hidden
+                            w-full aspect-[3/4] h-[240px]
+                            sm:w-[300px] sm:h-[280px]
+                            md:w-full md:h-[250px] lg:h-[350px]">
+
+                    <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_7ed6c000f44a4e70bd6397a496c53d63~mv2.jpg"
+                        class="object-cover w-full h-full rounded-xl" alt="hair image"/>
+                </div>
+            </a>
+
+            <div class="category-name mt-3">
+                <a href="/product?category=hair">
+                    <button class="text-black px-6 py-1 md:px-10 md:py-2 rounded-xl border border-black 
+                        font-bold font-poppins text-lg md:text-3xl hover:bg-orange-400">
+                        hair
+                    </button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ABOUT HOME SECTION -->
+<div class="about w-full h-[50vh] flex items-center justify-center py-2">
+    <div class="bg-[#a0c8ff] p-4 w-[95%] h-full rounded-xl flex flex-col items-center justify-center gap-4">
+        <div class="about-one font-poppins font-bold text-[#2d5143] md:text-4xl text-3xl lg:text-6xl reveal">our story
+        </div>
+        <div
+            class="about-two font-bold text-[#2d5143] md:text-xl text-base lg:px-60 px-10 text-center reveal lg:text-2xl font-poppins">
+            born
+            from a passion for
+            beauty
+            rituals, we celebrate individuality and bring radiant confidence to everyone</div>
+        <div class="about-three reveal text-[12px] lg:text-lg font-serif">for every body, anywhere</div>
+    </div>
+</div>
+<!-- SOCIAL-MEDIA SECTION -->
+<div class="social-media flex flex-col items-center justify-center gap-4 py-4">
+    <div class="insta-logo reveal">
+        <a href="https://www.instagram.com/ekta.340?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
+            <lord-icon src="https://cdn.lordicon.com/wgtaryar.json" trigger="hover"
+                colors="primary:#000000,secondary:#000000,tertiary:#000000,quaternary:#000000"
+                class="w-8 h-8 sm:w-10 sm:h-10 md:w-10 md:h-10 lg:w-12 lg:h-12">
+            </lord-icon>
+        </a>
+    </div>
+    <div class="social-text font-poppins font-bold text-[#2d5143] md:text-4xl text-xl reveal">
+        Follow Us on Instagram
+    </div>
+    <div
+        class="social-hastag text-[#2d5143] md:text-3xl text-xl reveal font-serif font-normal">
+        <a href="https://www.instagram.com/ekta.340?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
+            #sheatra
+        </a>
+    </div>
+</div>
+<!-- section scroll -->
+<section class="w-full py-20 overflow-hidden">
+
+    <div class="row row-1 flex md:gap-6 gap-3 mb-10">
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_4976ca6d16ea4de0ba9426200fef0082~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_417c8446fbf5420cb54fb1771c1bf83c~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_70bf0dbc8eeb4528981d29522350b5cd~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_5c2cfd57d9f54107aecc7a06b274bfab~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_26bb930ea74a48b8b38315ef1afa8946~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_70bf0dbc8eeb4528981d29522350b5cd~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_5c2cfd57d9f54107aecc7a06b274bfab~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_26bb930ea74a48b8b38315ef1afa8946~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+    </div>
+
+
+    <!-- ROW 2 (opposite direction) -->
+    <div class="row row-2 flex md:gap-6 gap-3 mb-10">
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_b09330ae3a98473284f67259ba298b12~mv2.jpg/v1/fit/w_960,h_958,q_90,enc_avif,quality_auto/c837a6_b09330ae3a98473284f67259ba298b12~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_68585e91e2144b06bc5e7445fc373546~mv2.jpg/v1/fit/w_960,h_958,q_90,enc_avif,quality_auto/c837a6_68585e91e2144b06bc5e7445fc373546~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_1aefaaf9b71e45ec981496767a729a41~mv2.jpg/v1/fit/w_960,h_958,q_90,enc_avif,quality_auto/c837a6_1aefaaf9b71e45ec981496767a729a41~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_dc7ca7368e234e678293bb090e950284~mv2.jpg/v1/fit/w_960,h_958,q_90,enc_avif,quality_auto/c837a6_dc7ca7368e234e678293bb090e950284~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_c995b485995a446fa9432439a6b5b82a~mv2.jpg/v1/fit/w_960,h_960,q_90,enc_avif,quality_auto/c837a6_c995b485995a446fa9432439a6b5b82a~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_70bf0dbc8eeb4528981d29522350b5cd~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_5c2cfd57d9f54107aecc7a06b274bfab~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+
+        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-72 md:h-72 rounded-3xl overflow-hidden flex-shrink-0">
+            <img loading="lazy" src="https://static.wixstatic.com/media/c837a6_26bb930ea74a48b8b38315ef1afa8946~mv2.jpg"
+                class="w-full h-full object-cover" alt="add image"/>
+        </div>
+    </div>
+</section>
+
+{% endblock body %}

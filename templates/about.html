@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% block title %}About -{% endblock title %}
+{% block body %}
+<!-- NAVBAR -->
+<nav
+    class="fixed top-5 left-1/2 -translate-x-1/2 w-[90%] bg-[#ae3a00] rounded-3xl md:p-4 p-2 shadow z-50 font-poppins font-normal">
+
+    <!-- ========== DESKTOP NAVBAR (lg+) ========== -->
+    <div class="hidden lg:flex justify-between items-center">
+
+        <!-- Logo + Menu -->
+        <div class="flex items-center gap-10">
+            <div class="flex items-center gap-2">
+                <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}"
+                    class="w-7 h-7">
+                <h3 class="text-[#eeeeee] font-bold text-2xl font-poppins">SEHATRA</h3>
+            </div>
+
+            <ul class="flex gap-8 text-[#eeeeee]">
+                <a href="/">
+                    <li class="hover:text-[#a0c8ff]">Home</li>
+                </a>
+                <a href="/product">
+                    <li class="hover:text-[#a0c8ff]">Product</li>
+                </a>
+                <a href="/about">
+                    <li class="hover:text-[#a0c8ff]">About</li>
+                </a>
+                <a href="/contact">
+                    <li class="hover:text-[#a0c8ff]">Contact</li>
+                </a>
+                <a href="/highlight">
+                    <li class="hover:text-[#a0c8ff]">Highlights</li>
+                </a>
+            </ul>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <div onclick="window.location.href='/search'"
+                class="hidden lg:flex items-center bg-[#ae3a00] px-3 py-1 rounded-xl hover:underline hover:decoration-[#eeeeee] gap-3 cursor-pointer">
+                <p class="text-[#eeeeee] text-base">Search</p>
+                <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                    style="width:20px;height:20px"></lord-icon>
+            </div>
+
+            {% if session.get('user_id') %}
+            <!-- LOGGED IN: PROFILE BUTTON -->
+            <div class="relative group">
+                <button id="profileBtn"
+                    class="flex items-center gap-2 bg-[#eeeeee] text-black px-4 py-2 rounded-full transition">
+                    <img loading="lazy" alt="profile pic"
+                        src="{{ session.get('profile_pic', 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png') }}"
+                        class="w-6 h-6 rounded-full object-cover">
+                    <span class="font-semibold">{{ session.get('user_name') }}</span>
+                    <span class="text-xl">▼</span>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div id="profileMenu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-[#ae3a00] text-[#eeeeee] rounded-xl shadow-xl border border-gray-200">
+
+                    <a href="/profile" class="block px-4 py-3 rounded-t-xl">
+                        👤 My Profile
+                    </a>
+
+                    <a href="/logout" class="block px-4 py-3 rounded-b-xl">
+                        🚪 Logout
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- NOT LOGGED IN -->
+            <div class="flex items-center gap-4">
+                <a href="/login">
+                    <button
+                        class="border border-[#eeeeee] text-[#eeeeee] px-4 py-2 rounded-lg hover:text-white hover:bg-[#8c2f00] font-semibold">
+                        Login
+                    </button>
+                </a>
+
+                <a href="/signup">
+                    <button class="bg-[#eeeeee] text-black px-4 py-2 rounded-lg hover:bg-[#8c2f00] font-semibold">
+                        Sign Up
+                    </button>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== TABLET NAVBAR (md → lg) ========== -->
+    <div class="hidden md:flex lg:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-7 h-7">
+            <h3 class="text-[#eeeeee] font-bold text-2xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <!-- Hamburger -->
+            <button id="menuBtnTab" class="md:text-3xl text-[#eeeeee]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== MOBILE NAVBAR (sm) ========== -->
+    <div class="flex md:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-5 h-5">
+            <h3 class="text-[#eeeeee] font-bold text-xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <button id="menuBtn" class="text-2xl text-[#eeeeee]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- MOBILE DROPDOWN MENU -->
+    <div id="mobileMenu" class="hidden flex-col mt-4 bg-[#8c2f00] rounded-2xl p-4 text-[14px] text-[#eeeeee]">
+
+        <a href="/">
+            <p class="py-2 hover:text-[#a0c8ff]">Home</p>
+        </a>
+        <a href="/product">
+            <p class="py-2 hover:text-[#a0c8ff]">Product</p>
+        </a>
+        <a href="/about">
+            <p class="py-2 hover:text-[#a0c8ff]">About</p>
+        </a>
+        <a href="/contact">
+            <p class="py-2 hover:text-[#a0c8ff]">Contact</p>
+        </a>
+        <a href="/highlight">
+            <p class="py-2 hover:text-[#a0c8ff]">Highlights</p>
+        </a>
+
+        <div class="border-t border-gray-300 my-2"></div>
+
+        {% if session.get('user_id') %}
+        <a href="/profile">
+            <p class="py-2 hover:text-[#a0c8ff]">👤 My Profile</p>
+        </a>
+        <a href="/logout">
+            <p class="py-2 text-[#eeeeee]">🚪 Logout</p>
+        </a>
+
+        {% else %}
+        <a href="/login">
+            <p class="py-2 hover:text-[#a0c8ff]">Login</p>
+        </a>
+        <a href="/signup">
+            <p class="py-2 hover:text-[#a0c8ff]">Sign Up</p>
+        </a>
+        {% endif %}
+    </div>
+
+</nav>
+<!-- about part -->
+<div class="about w-full min-h-screen pt-32 px-4 md:px-16 flex flex-col items-center">
+
+    <!-- ABOUT SECTION -->
+    <div class="bg-[#a0c8ff] p-6 md:p-10 w-full md:w-[95%] rounded-xl flex flex-col items-center gap-6 reveal">
+        <h1 class="font-poppins font-bold text-[#2d5143] text-3xl md:text-5xl">About Us</h1>
+
+        <p class="text-[#2d5143] text-sm md:text-xl text-center leading-relaxed max-w-4xl">
+            We're a global health and wellness community dedicated to enhancing your life.
+            We aim to empower millions with science-based products, personalised training,
+            and entrepreneurial opportunities — helping you achieve balanced, thriving living.
+        </p>
+    </div>
+
+    <!-- 360 WELL-BEING -->
+    <h2 class="font-bold text-[#2d5143] font-poppins text-2xl md:text-3xl mt-12 reveal">
+        360° Well-being
+    </h2>
+
+    <!-- 360 CARDS (Responsive Grid) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-10 place-items-center">
+
+        <!-- CARD 1 -->
+        <div class="reveal bg-[#a0c8ff] w-full max-w-[350px] rounded-xl p-6 flex flex-col gap-4 shadow-md">
+            <h3 class="font-bold font-poppins text-2xl text-center">Physical Wellness</h3>
+            <p class="text-center text-sm md:text-base">
+                Unlock your body's full potential with our trusted products and fitness programs.
+            </p>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="reveal bg-orange-400 w-full max-w-[350px] rounded-xl p-6 flex flex-col gap-4 shadow-md">
+            <h3 class="font-bold font-poppins text-2xl text-center">Financial Opportunity</h3>
+            <p class="text-center text-sm md:text-base">
+                Build your own business with strong leadership, support, and high-income potential.
+            </p>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="reveal bg-[#E1F861] w-full max-w-[350px] rounded-xl p-6 flex flex-col gap-4 shadow-md">
+            <h3 class="font-bold font-poppins text-2xl text-center">Emotional Wellness</h3>
+            <p class="text-center text-sm md:text-base">
+                Stay motivated with guidance from top leaders helping you achieve success.
+            </p>
+        </div>
+    </div>
+
+    <!-- CHARACTER SECTION -->
+    <div class="character flex flex-col items-center my-12 reveal bg-black">
+        <img src="{{ url_for('static', filename='ektalogo.jpg') }}"
+            class="rounded-full w-40 md:w-56 shadow-lg hidden" alt="profile photo" loading="lazy" />
+
+        <h3 class="font-bold font-poppins text-2xl mt-4">-----</h3>
+        <p class="text-sm text-gray-600">----</p>
+    </div>
+
+    <!-- MOTIVATION QUOTE -->
+    <div class="bg-[#a0c8ff] p-6 md:p-10 w-full md:w-[95%] rounded-xl flex flex-col items-center gap-6 reveal">
+
+        <i class="fa-solid fa-quote-left text-[#2d5143] text-3xl md:text-4xl"></i>
+
+        <p class="text-[#2d5143] text-center text-base md:text-xl max-w-3xl leading-relaxed">
+            Quitters never win and winners never quit.
+        </p>
+
+        <div class="w-32 border border-[#2d5143]"></div>
+
+        <p class="font-bold font-poppins text-[#2d5143] text-xl">SHEATRA</p>
+    </div>
+
+</div>
+
+{% endblock body %}

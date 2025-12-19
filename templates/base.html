@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="SEHATRA - Health, Beauty & Wellness Products">
+
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="SEHATRA">
+    <meta property="og:title" content="SEHATRA - Premium Wellness Products">
+    <meta property="og:description" content="Discover our best natural face, hair & wellness products.">
+    <meta property="og:image" content="/static/images/hero.jpg">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SEHATRA Wellness Products">
+    <meta name="twitter:description" content="Natural, science-backed wellness products.">
+    <meta name="twitter:image" content="/static/images/hero.jpg">
+    <meta name="description" content="{{ seo_description | default('SEHATRA - Health, Beauty & Wellness Products') }}">
+    <meta name="keywords"
+        content="{{ seo_keywords | default('health, beauty, skincare, wellness, sehatra products') }}">
+    <meta property="og:title" content="{{ seo_title | default('SEHATRA') }}">
+    <meta property="og:description"
+        content="{{ seo_description | default('Premium health and skincare products by SEHATRA') }}">
+
+
+
+    <title>{% block title %} {% endblock title %} SEHATRA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://use.typekit.net/glu1vkm.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col justify-center bg-[#eeeeee]">
+    {% block body %}
+
+    {% endblock body %}
+    <!-- footer -->
+    <footer class="lg:mt-32 bg-[#2d5143] text-[#f2f0eb] md:p-12 p-4 mt-4 font-poppins font-normal">
+        <div class="start-footer lg:flex lg:items-center lg:justify-between">
+            <div class="main-footer-one md:flex-row flex flex-col md:gap-16 gap-5 lg:gap-10">
+                <div class="footer-one reveal">
+                    <h1 class="font-bold font-poppins md:text-xl text-base">Quick Links</h1>
+                    <ul class="text-[12px] md:text-base">
+                        <a href="/">
+                            <li>Home</li>
+                        </a>
+                        <a href="/about">
+                            <li>About</li>
+                        </a>
+                        <a href="/product">
+                            <li>Product</li>
+                        </a>
+                        <a href="/contact">
+                            <li>Contact Us</li>
+                        </a>
+                        <a href="/highlight">
+                            <li>Highlights</li>
+                        </a>
+                    </ul>
+                </div>
+                <div class="footer-two reveal">
+                    <h1 class="font-bold font-poppins text-base md:text-xl">Support</h1>
+                    <ul class="text-[12px] md:text-base">
+                        <a href="/terms">
+                            <li>Terms & Conditions</li>
+                        </a>
+                        <a href="/privacy">
+                            <li>Privacy Policy</li>
+                        </a>
+                        <!-- <a href="/refund">
+                            <li>refund policy</li>
+                        </a> -->
+                        <!-- <a href="#">
+                            <li>shipping policy</li>
+                        </a>
+                        <a href="#">
+                            <li>accessesiblity statement</li>
+                        </a> -->
+                    </ul>
+                </div>
+                <div class="footer-three reveal">
+                    <h1 class="font-bold font-poppins md:text-xl text-base">Connect With Us</h1>
+                    <ul class="text-[12px] md:text-base">
+                        <a href="#">
+                            <li>address</li>
+                        </a>
+                        <a href="#">
+                            <li>email</li>
+                        </a>
+                        <a href="#">
+                            <li>+91 74101 46251</li>
+                        </a>
+                        <a href="#">
+                            <li>insta</li>
+                        </a>
+                    </ul>
+                </div>
+            </div>
+            <div class="main-footer-two reveal lg:space-y-4 space-y-2 py-4">
+
+                <h1 class="lg:text-2xl text-base font-bold text-[#f2f0eb] font-poppins">
+                    Join our WhatsApp Channel
+                </h1>
+
+                <h2 class="lg:text-base text-[12px] text-[#f2f0eb]">
+                    Get instant updates, offers & exclusive discounts ✨
+                </h2>
+
+                <!-- WHATSAPP JOIN BUTTON -->
+                <a href="https://wa.me/your-channel-link" target="_blank"
+                    class="inline-flex items-center lg:gap-3 gap-2 bg-[#E1F861] text-[#2d5143] lg:px-10 lg:py-3 px-5 py-1 rounded-xl font-bold font-poppins text-[12px] lg:text-lg hover:bg-transparent hover:border hover:border-[#E1F861] hover:text-[#E1F861] transition-all">
+
+                    <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                        class="w-6 h-6" alt="whatsapp logo" />
+
+                    Join WhatsApp Channel
+                </a>
+
+                <p class="text-[#f2f0eb] opacity-80 lg:text-sm text-[10px]">
+                    Stay updated. No spam — only useful updates ❤️
+                </p>
+
+            </div>
+
+        </div>
+        <div class="second-footer lg:flex lg:items-center lg:justify-between lg:pt-32">
+            <div class="logo-name lg:text-5xl text-3xl font-bold font-poppins text-[#eeeeee]">
+                <a href="/admin_login">SEHATRA</a>
+            </div>
+            <div class="info reveal">
+                <div class="links md:flex md:items-center gap-4 md:flex-row-reverse">
+                    <div class="insta-logo">
+                        <a
+                            href="https://www.instagram.com/ekta.340?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
+                            <lord-icon src="https://cdn.lordicon.com/wgtaryar.json" trigger="hover"
+                                colors="primary:#f2f0eb,secondary:#f2f0eb,tertiary:#f2f0eb,quaternary:#f2f0eb"
+                                class="w-8 h-8 sm:w-10 sm:h-10 md:w-10 md:h-10 lg:w-12 lg:h-12">
+                            </lord-icon>
+                        </a>
+                    </div>
+                    <div class="whatsapp-logo">
+                        <a href="https://wa.me/7410146251?text=Hello%20there%21%20I%20need%20help." target="_blank"
+                            rel="noopener">
+                            <lord-icon src="https://cdn.lordicon.com/edecmgef.json" trigger="hover"
+                                colors="primary:#f2f0eb,secondary:#f2f0eb"
+                                class="w-8 h-8 sm:w-10 sm:h-10 md:w-10 md:h-10 lg:w-12 lg:h-12">
+                            </lord-icon>
+                        </a>
+                    </div>
+                    <div class="facebook-logo">
+                        <a href="https://www.facebook.com/ekta.vishwakarma.222811">
+                            <lord-icon src="https://cdn.lordicon.com/oemjpisw.json" trigger="hover"
+                                colors="primary:#0a5c15,secondary:#f2f0eb"
+                                class="w-8 h-8 sm:w-10 sm:h-10 md:w-10 md:h-10 lg:w-12 lg:h-12">
+                            </lord-icon>
+                        </a>
+                    </div>
+                    <div class="youtube-logo">
+                        <a href="https://www.youtube.com/@ektavishwakarma2754">
+                            <lord-icon src="https://cdn.lordicon.com/dhmtopei.json" trigger="hover"
+                                colors="primary:#eeeeee,secondary:#2d5143,tertiary:#3a3347"
+                                class="w-8 h-8 sm:w-10 sm:h-10 md:w-10 md:h-10 lg:w-12 lg:h-12">
+                            </lord-icon>
+                        </a>
+                    </div>
+                </div>
+                <div class="copyright text-[12px] lg:text-base">
+                    © 2025 SEHATRA. All rights reserved. · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- script tag -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="{{ url_for('static', filename='test.js') }}"></script>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // LEFT → RIGHT (Row 1)
+        gsap.to(".row-1", {
+            x: "-10%",               // move right
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".row-1",
+                scrub: 1,             // movement only on scroll
+            }
+        });
+
+        // RIGHT → LEFT (Row 2)
+        gsap.to(".row-2", {
+            x: "10%",              // move left
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".row-2",
+                scrub: 1,
+            }
+        });
+
+        gsap.to("#hero", {
+            opacity: 1,
+            y: 0,
+            duration: 2,
+            ease: "power3.out"
+        });
+
+        gsap.to("#nav", {
+            opacity: 1,
+            y: 0,
+            duration: 2,
+            ease: "power3.out"
+        });
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray(".reveal").forEach((elem) => {
+            gsap.to(elem, {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: elem,
+                    start: "top 90%",   // jab element screen mein enter kare tab start
+                    end: "top 50%",     // smooth easing
+                    scrub: false        // animation once only
+                }
+            });
+        });
+
+        document.getElementById("menuBtn").onclick = () => {
+            document.getElementById("mobileMenu").classList.toggle("hidden");
+        };
+
+        document.getElementById("menuBtnTab").onclick = () => {
+            document.getElementById("mobileMenu").classList.toggle("hidden");
+        };
+
+        const profileBtn = document.getElementById("profileBtn");
+        const profileMenu = document.getElementById("profileMenu");
+
+        // Show / hide on click
+        profileBtn?.addEventListener("click", () => {
+            profileMenu.classList.toggle("hidden");
+        });
+
+        // Hide when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!profileBtn?.contains(e.target) && !profileMenu?.contains(e.target)) {
+                profileMenu?.classList.add("hidden");
+            }
+        });
+        window.addEventListener("load", () => {
+            ScrollTrigger.refresh();
+        });
+
+        document.getElementById("filterToggle")?.addEventListener("click", () => {
+            document.getElementById("mobileFilter").classList.toggle("hidden");
+        });
+    </script>
+</body>
+
+</html>
+
+<!-- https://www.wix.com/website-template/view/html/3718 -->

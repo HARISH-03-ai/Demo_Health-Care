@@ -1,0 +1,44 @@
+{% extends "admin_base.html" %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 mt-10">
+
+    {% for h in highlights %}
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+
+        <video src="{{ url_for('static', filename='uploads/' + h.video_file) }}"
+            class="w-full aspect-square object-cover" controls>
+        </video>
+
+        <div class="p-3 flex justify-between items-center">
+            <span class="text-sm text-gray-500">
+                {{ h.created_at.strftime('%d %b %Y') }}
+            </span>
+
+            <a href="/admin/delete-highlight/{{ h.id }}" onclick="
+   event.preventDefault();
+   Swal.fire({
+       title: 'Delete Highlight?',
+       text: 'Are you sure you want to confirm delete it.',
+       icon: 'warning',
+       showCancelButton: true,
+       confirmButtonColor: '#dc2626',
+       cancelButtonColor: '#6b7280',
+       confirmButtonText: 'Yes, Delete',
+       cancelButtonText: 'Cancel'
+   }).then((result) => {
+       if (result.isConfirmed) {
+           window.location.href = '/admin/delete-highlight/{{ h.id }}';
+       }
+   });
+   " class="text-red-500 font-semibold hover:text-red-700 cursor-pointer">
+                Delete
+            </a>
+
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

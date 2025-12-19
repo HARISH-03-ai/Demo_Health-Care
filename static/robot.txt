@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Block admin + backend
+Disallow: /admin
+Disallow: /admin_login
+Disallow: /manage_products
+Disallow: /edit_product
+Disallow: /delete_product
+Disallow: /add_product
+Disallow: /manage-highlights
+Disallow: /add-highlights
+
+
+# Block user-only pages
+Disallow: /profile
+Disallow: /logout
+Disallow: /contact (POST forms ko avoid karna sahi hota)
+Disallow: /orders
+
+# Block duplicate or temporary pages
+Disallow: /search
+Disallow: /*?*
+
+Sitemap: https://sehatra.com/sitemap.xml

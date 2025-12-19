@@ -1,0 +1,79 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+
+<div class="p-10 bg-gray-100 min-h-screen font-poppins font-normal">
+
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Blocked Users</h1>
+
+    {% if users %}
+    <div class="bg-white shadow-xl rounded-xl p-6">
+
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="bg-gray-200 text-left text-gray-700">
+                    <th class="p-3 font-semibold">Name</th>
+                    <th class="p-3 font-semibold">Email</th>
+                    <th class="p-3 font-semibold">Phone</th>
+                    <th class="p-3 font-semibold">Signup Date</th>
+                    <th class="p-3 font-semibold">Total Reviews</th>
+                    <th class="p-3 font-semibold">Last Review</th>
+                    <th class="p-3 font-semibold text-center">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for user in users %}
+                <tr class="border-b hover:bg-gray-50">
+
+                    <!-- Name -->
+                    <td class="p-3 font-semibold text-gray-800">
+                        {{ user.name }}
+                    </td>
+
+                    <!-- Email -->
+                    <td class="p-3">{{ user.email }}</td>
+
+                    <!-- Phone -->
+                    <td class="p-3">{{ user.phone or 'Not Provided' }}</td>
+
+                    <!-- Signup Date -->
+                    <td class="p-3">
+                        {{ user.created_at.strftime('%d %b %Y') }}
+                    </td>
+
+                    <!-- Total Reviews -->
+                    <td class="p-3 font-bold">
+                        {{ user.reviews|length }}
+                    </td>
+
+                    <!-- Last Review -->
+                    <td class="p-3">
+                        {% if user.reviews %}
+                            {{ user.reviews[-1].created_at.strftime('%d %b %Y') }}
+                        {% else %}
+                            No Reviews
+                        {% endif %}
+                    </td>
+
+                    <!-- Unblock Button -->
+                    <td class="p-3 text-center">
+                        <a href="/unblock_user/{{ user.id }}"
+                           class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                            Unblock
+                        </a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+    {% else %}
+    <p class="text-gray-500 text-lg">No blocked users yet.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+@import url("https://use.typekit.net/glu1vkm.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker 12s linear infinite;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    background: #2b312f;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    background: #2b312f;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Remove default track */
+input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    background: transparent;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 1.3s ease-out forwards;
+}
+
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

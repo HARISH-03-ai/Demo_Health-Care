@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% block title %}Contact us -{% endblock title %}
+{% block body %}
+<!-- nav-bar -->
+<nav
+    class="fixed top-5 left-1/2 -translate-x-1/2 w-[90%] bg-[#ae3a00] rounded-3xl md:p-4 p-2 shadow z-50 font-poppins font-normal">
+
+    <!-- ========== DESKTOP NAVBAR (lg+) ========== -->
+    <div class="hidden lg:flex justify-between items-center">
+
+        <!-- Logo + Menu -->
+        <div class="flex items-center gap-10">
+            <div class="flex items-center gap-2">
+                <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}"
+                    class="w-7 h-7">
+                <h3 class="text-[#eeeeee] font-bold text-2xl font-poppins">SEHATRA</h3>
+            </div>
+
+            <ul class="flex gap-8 text-[#eeeeee]">
+                <a href="/">
+                    <li class="hover:text-[#a0c8ff]">Home</li>
+                </a>
+                <a href="/product">
+                    <li class="hover:text-[#a0c8ff]">Product</li>
+                </a>
+                <a href="/about">
+                    <li class="hover:text-[#a0c8ff]">About</li>
+                </a>
+                <a href="/contact">
+                    <li class="hover:text-[#a0c8ff]">Contact</li>
+                </a>
+                <a href="/highlight">
+                    <li class="hover:text-[#a0c8ff]">Highlights</li>
+                </a>
+            </ul>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <div onclick="window.location.href='/search'"
+                class="hidden lg:flex items-center bg-[#ae3a00] px-3 py-1 rounded-xl hover:underline hover:decoration-[#eeeeee] gap-3 cursor-pointer">
+                <p class="text-[#eeeeee] text-base">Search</p>
+                <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                    style="width:20px;height:20px"></lord-icon>
+            </div>
+
+            {% if session.get('user_id') %}
+            <!-- LOGGED IN: PROFILE BUTTON -->
+            <div class="relative group">
+                <button id="profileBtn"
+                    class="flex items-center gap-2 bg-[#eeeeee] text-black px-4 py-2 rounded-full transition">
+                    <img loading="lazy" alt="profile pic"
+                        src="{{ session.get('profile_pic', 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png') }}"
+                        class="w-6 h-6 rounded-full object-cover">
+                    <span class="font-semibold">{{ session.get('user_name') }}</span>
+                    <span class="text-xl">▼</span>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div id="profileMenu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-[#ae3a00] text-[#eeeeee] rounded-xl shadow-xl border border-gray-200">
+
+                    <a href="/profile" class="block px-4 py-3 rounded-t-xl">
+                        👤 My Profile
+                    </a>
+
+                    <a href="/logout" class="block px-4 py-3 rounded-b-xl">
+                        🚪 Logout
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- NOT LOGGED IN -->
+            <div class="flex items-center gap-4">
+                <a href="/login">
+                    <button
+                        class="border border-[#eeeeee] text-[#eeeeee] px-4 py-2 rounded-lg hover:text-white hover:bg-[#8c2f00] font-semibold">
+                        Login
+                    </button>
+                </a>
+
+                <a href="/signup">
+                    <button class="bg-[#eeeeee] text-black px-4 py-2 rounded-lg hover:bg-[#8c2f00] font-semibold">
+                        Sign Up
+                    </button>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== TABLET NAVBAR (md → lg) ========== -->
+    <div class="hidden md:flex lg:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-7 h-7">
+            <h3 class="text-[#eeeeee] font-bold text-2xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <!-- Hamburger -->
+            <button id="menuBtnTab" class="md:text-3xl text-[#eeeeee]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== MOBILE NAVBAR (sm) ========== -->
+    <div class="flex md:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-5 h-5">
+            <h3 class="text-[#eeeeee] font-bold text-xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <button id="menuBtn" class="text-2xl text-[#eeeeee]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- MOBILE DROPDOWN MENU -->
+    <div id="mobileMenu" class="hidden flex-col mt-4 bg-[#8c2f00] rounded-2xl p-4 text-[14px] text-[#eeeeee]">
+
+        <a href="/">
+            <p class="py-2 hover:text-[#a0c8ff]">Home</p>
+        </a>
+        <a href="/product">
+            <p class="py-2 hover:text-[#a0c8ff]">Product</p>
+        </a>
+        <a href="/about">
+            <p class="py-2 hover:text-[#a0c8ff]">About</p>
+        </a>
+        <a href="/contact">
+            <p class="py-2 hover:text-[#a0c8ff]">Contact</p>
+        </a>
+        <a href="/highlight">
+            <p class="py-2 hover:text-[#a0c8ff]">Highlights</p>
+        </a>
+
+        <div class="border-t border-gray-300 my-2"></div>
+
+        {% if session.get('user_id') %}
+        <a href="/profile">
+            <p class="py-2 hover:text-[#a0c8ff]">👤 My Profile</p>
+        </a>
+        <a href="/logout">
+            <p class="py-2 text-[#eeeeee]">🚪 Logout</p>
+        </a>
+
+        {% else %}
+        <a href="/login">
+            <p class="py-2 hover:text-[#a0c8ff]">Login</p>
+        </a>
+        <a href="/signup">
+            <p class="py-2 hover:text-[#a0c8ff]">Sign Up</p>
+        </a>
+        {% endif %}
+    </div>
+
+</nav>
+<!-- contact part -->
+<div class="about w-full min-h-screen px-10 flex flex-col items-center font-poppins font-normal">
+    <!-- about -->
+    <!-- CONTACT SECTION -->
+    <div class="w-full h-auto md:pt-28 lg:pt-28 pt-10 px-6 md:px-16 flex flex-col items-center my-16">
+
+        <h1 class="about-one font-poppins font-bold text-[#2d5143] 
+               text-3xl sm:text-4xl md:text-5xl reveal">
+            Contact Us
+        </h1>
+
+        <!-- Responsive Grid -->
+        <div class="grid 
+                grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
+                gap-6 md:gap-10 
+                w-full mt-12 place-items-center text-[#2d5143]">
+
+            <!-- CARD 1 - Address -->
+            <div class="reveal bg-[#a0c8ff] rounded-xl 
+                    w-full max-w-[350px] h-auto 
+                    flex flex-col items-center p-4 gap-6 
+                    shadow-lg hover:shadow-xl transition">
+
+                <lord-icon src="https://cdn.lordicon.com/bpmglzll.json" trigger="hover" colors="primary:#2d5143"
+                    class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
+                </lord-icon>
+
+                <h2 class="font-poppins font-bold text-2xl sm:text-3xl text-center">
+                    Address
+                </h2>
+
+                <p class="text-center text-sm sm:text-base">
+                    Unlock your body's full potential with
+                </p>
+            </div>
+
+            <!-- CARD 2 - Phone -->
+            <div class="reveal bg-orange-400 rounded-xl 
+                    w-full max-w-[350px] h-auto 
+                    flex flex-col items-center p-4 gap-6 
+                    shadow-lg hover:shadow-xl transition">
+
+                <lord-icon src="https://cdn.lordicon.com/fpvaxfly.json" trigger="hover" colors="primary:#2d5143"
+                    class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
+                </lord-icon>
+
+                <h2 class="font-poppins font-bold text-2xl sm:text-3xl text-center">
+                    Phone
+                </h2>
+
+                <p class="text-center text-sm sm:text-base">
+                    +91 74101 46251
+                </p>
+            </div>
+
+            <!-- CARD 3 - Email -->
+            <div class="reveal bg-[#E1F861] rounded-xl 
+                    w-full max-w-[350px] h-auto 
+                    flex flex-col items-center p-4 gap-6 
+                    shadow-lg hover:shadow-xl transition">
+
+                <lord-icon src="https://cdn.lordicon.com/wpsdctqb.json" trigger="hover" colors="primary:#2d5143"
+                    class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
+                </lord-icon>
+
+                <h2 class="font-poppins font-bold text-2xl sm:text-3xl text-center">
+                    Email
+                </h2>
+
+                <p class="text-center text-sm sm:text-base">
+                    example@gmail.com
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="w-full">
+        <h1 class="text-center text-4xl font-bold font-poppins text-[#2d5143]">Contact Form</h1>
+
+        <!-- CHECK IF USER LOGGED IN -->
+        {% set logged_in = session.get('user_id') %}
+
+        <form action="/contact" method="POST"
+            class="w-[90%] md:w-[70%] lg:w-[80%] mx-auto mt-10 bg-white rounded-3xl shadow-[0_15px_60px_rgba(0,0,0,0.1)] p-10 {{ '' if logged_in else 'pointer-events-none opacity-50' }}">
+
+            <!-- LOGIN REQUIRED MESSAGE -->
+            {% if not logged_in %}
+            <div class="mb-5 p-4 bg-red-100 border border-red-300 text-red-700 rounded-xl text-center font-semibold">
+                Please login to contact us.
+            </div>
+            {% endif %}
+
+            <!-- Name + Gender -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div>
+                    <label class="text-gray-700 font-medium">Name</label>
+                    <input name="name" type="text" value="{{ session.get('user_name') }}" readonly
+                        class="w-full border-b-2 border-[#a0c8ff] outline-none py-2 mt-2 bg-transparent">
+                </div>
+
+                <div>
+                    <label class="text-gray-700 font-medium">Gender</label>
+                    <select name="gender" required
+                        class="w-full border-b-2 border-[#a0c8ff] outline-none py-2 mt-2 bg-transparent">
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Email + Phone -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
+                <div>
+                    <label class="text-gray-700 font-medium">Email</label>
+                    <input type="email" name="email" value="{{ session.get('user_email') }}" readonly
+                        class="w-full border-b-2 border-[#a0c8ff] outline-none py-2 mt-2 bg-transparent">
+                </div>
+
+                <div>
+                    <label class="text-gray-700 font-medium">Phone</label>
+                    <input name="phone" type="text" value="{{ session.get('user_phone') }}" readonly
+                        class="w-full border-b-2 border-[#a0c8ff] outline-none py-2 mt-2 bg-transparent">
+                </div>
+            </div>
+
+            <!-- Message -->
+            <div class="mt-10">
+                <label class="text-gray-700 font-medium">Message</label>
+                <textarea rows="3" name="message"
+                    class="w-full border-b-2 border-[#a0c8ff] outline-none py-2 mt-2 bg-transparent resize-none"></textarea>
+            </div>
+
+            <!-- Button -->
+            <div class="flex justify-center mt-10">
+                {% if logged_in %}
+                <!-- User is logged in -->
+                <button
+                    class="bg-blue-500 text-white font-semibold px-10 py-3 rounded-full hover:bg-blue-600 transition">
+                    SEND MESSAGE
+                </button>
+                {% else %}
+                <!-- User NOT logged in → redirect to login -->
+                <button onclick="window.location.href='/login'; return false;"
+                    class="bg-gray-400 text-white font-semibold px-10 py-3 rounded-full hover:bg-gray-500 transition">
+                    LOGIN TO CONTINUE
+                </button>
+                {% endif %}
+            </div>
+
+        </form>
+
+    </div>
+</div>
+{% endblock body %}

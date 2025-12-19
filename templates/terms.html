@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% block title %}Terms & Conditions -{% endblock title %}
+{% block body %}
+<nav
+    class="fixed top-5 left-1/2 -translate-x-1/2 w-[90%] bg-[#ae3a00] rounded-3xl md:p-4 p-2 shadow z-50 font-poppins font-normal">
+
+    <!-- ========== DESKTOP NAVBAR (lg+) ========== -->
+    <div class="hidden lg:flex justify-between items-center">
+
+        <!-- Logo + Menu -->
+        <div class="flex items-center gap-10">
+            <div class="flex items-center gap-2">
+                <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}"
+                    class="w-7 h-7">
+                <h3 class="text-[#eeeeee] font-bold text-2xl font-poppins">SEHATRA</h3>
+            </div>
+
+            <ul class="flex gap-8 text-[#eeeeee]">
+                <a href="/">
+                    <li class="hover:text-[#a0c8ff]">Home</li>
+                </a>
+                <a href="/product">
+                    <li class="hover:text-[#a0c8ff]">Product</li>
+                </a>
+                <a href="/about">
+                    <li class="hover:text-[#a0c8ff]">About</li>
+                </a>
+                <a href="/contact">
+                    <li class="hover:text-[#a0c8ff]">Contact</li>
+                </a>
+                <a href="/highlight">
+                    <li class="hover:text-[#a0c8ff]">Highlights</li>
+                </a>
+            </ul>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <div onclick="window.location.href='/search'"
+                class="hidden lg:flex items-center bg-[#ae3a00] px-3 py-1 rounded-xl hover:underline hover:decoration-[#eeeeee] gap-3 cursor-pointer">
+                <p class="text-[#eeeeee] text-base">Search</p>
+                <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                    style="width:20px;height:20px"></lord-icon>
+            </div>
+
+            {% if session.get('user_id') %}
+            <!-- LOGGED IN: PROFILE BUTTON -->
+            <div class="relative group">
+                <button id="profileBtn"
+                    class="flex items-center gap-2 bg-[#eeeeee] text-black px-4 py-2 rounded-full transition">
+                    <img loading="lazy" alt="profile pic"
+                        src="{{ session.get('profile_pic', 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png') }}"
+                        class="w-6 h-6 rounded-full object-cover">
+                    <span class="font-semibold">{{ session.get('user_name') }}</span>
+                    <span class="text-xl">▼</span>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div id="profileMenu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-[#ae3a00] text-[#eeeeee] rounded-xl shadow-xl border border-gray-200">
+
+                    <a href="/profile" class="block px-4 py-3 rounded-t-xl">
+                        👤 My Profile
+                    </a>
+
+                    <a href="/logout" class="block px-4 py-3 rounded-b-xl">
+                        🚪 Logout
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- NOT LOGGED IN -->
+            <div class="flex items-center gap-4">
+                <a href="/login">
+                    <button
+                        class="border border-[#eeeeee] text-[#eeeeee] px-4 py-2 rounded-lg hover:text-white hover:bg-[#8c2f00] font-semibold">
+                        Login
+                    </button>
+                </a>
+
+                <a href="/signup">
+                    <button class="bg-[#eeeeee] text-black px-4 py-2 rounded-lg hover:bg-[#8c2f00] font-semibold">
+                        Sign Up
+                    </button>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== TABLET NAVBAR (md → lg) ========== -->
+    <div class="hidden md:flex lg:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-7 h-7">
+            <h3 class="text-[#eeeeee] font-bold text-2xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-5">
+
+            <!-- Search -->
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <!-- Hamburger -->
+            <button id="menuBtnTab" class="md:text-3xl text-[#eeeeee]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- ========== MOBILE NAVBAR (sm) ========== -->
+    <div class="flex md:hidden justify-between items-center">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+            <img loading="lazy" alt="logo" src="{{ url_for('static', filename='images/logo.png') }}" class="w-5 h-5">
+            <h3 class="text-[#eeeeee] font-bold text-xl">SEHATRA</h3>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <lord-icon src="https://cdn.lordicon.com/wjyqkiew.json" trigger="hover" colors="primary:#eeeeee"
+                style="width:24px;height:24px" onclick="window.location.href='/search'"></lord-icon>
+
+            <button id="menuBtn" class="text-2xl text-[#eeeeee]">☰</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- MOBILE DROPDOWN MENU -->
+    <div id="mobileMenu" class="hidden flex-col mt-4 bg-[#8c2f00] rounded-2xl p-4 text-[14px] text-[#eeeeee]">
+
+        <a href="/">
+            <p class="py-2 hover:text-[#a0c8ff]">Home</p>
+        </a>
+        <a href="/product">
+            <p class="py-2 hover:text-[#a0c8ff]">Product</p>
+        </a>
+        <a href="/about">
+            <p class="py-2 hover:text-[#a0c8ff]">About</p>
+        </a>
+        <a href="/contact">
+            <p class="py-2 hover:text-[#a0c8ff]">Contact</p>
+        </a>
+        <a href="/highlight">
+            <li class="hover:text-[#a0c8ff]">Highlights</li>
+        </a>
+
+        <div class="border-t border-gray-300 my-2"></div>
+
+        {% if session.get('user_id') %}
+        <a href="/profile">
+            <p class="py-2 hover:text-[#a0c8ff]">👤 My Profile</p>
+        </a>
+        <a href="/logout">
+            <p class="py-2 text-[#eeeeee]">🚪 Logout</p>
+        </a>
+
+        {% else %}
+        <a href="/login">
+            <p class="py-2 hover:text-[#a0c8ff]">Login</p>
+        </a>
+        <a href="/signup">
+            <p class="py-2 hover:text-[#a0c8ff]">Sign Up</p>
+        </a>
+        {% endif %}
+    </div>
+
+</nav>
+
+<div class="h-24"></div>
+
+<div class="max-w-7xl mx-auto p-8 mt-10 rounded-xl shadow min-h-screen font-poppins font-normal">
+
+    <!-- Page Title -->
+    <h1 class="text-4xl font-bold text-center mb-12 text-gray-800">Terms & Conditions</h1>
+
+    <!-- Section 1 -->
+    <div class="border-t border-gray-300 pt-10 pb-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <h2 class="text-3xl font-bold text-gray-800">A Legal Disclaimer</h2>
+
+        <p class="text-gray-700 leading-relaxed">
+            The explanations and information provided on this page are only general and high-level explanations
+            and information on how to write your own document of Terms & Conditions. You should not rely on this
+            article as legal advice or as recommendations regarding what you should actually do, because we cannot
+            know in advance what are the specific terms you wish to establish between your business and your
+            customers and visitors. We recommend that you seek legal advice to help you understand and to assist
+            you in the creation of your own Terms & Conditions.
+        </p>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="border-t border-gray-300 pt-10 pb-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <h2 class="text-3xl font-bold text-gray-800">Terms & Conditions - The Basics</h2>
+
+        <div class="space-y-4 text-gray-700 leading-relaxed">
+            <p>
+                Having said that, Terms and Conditions (“T&C”) are a set of legally binding terms defined by you, as the
+                owner of this website. The T&C set forth the legal boundaries governing the activities of the website
+                visitors, or your customers, while they visit or engage with this website. The T&C are meant to
+                establish
+                the legal relationship between the site visitors and you as the website owner.
+            </p>
+
+            <p>
+                T&C should be defined according to the specific needs and nature of each website. For example, a website
+                offering products to customers in e-commerce transactions requires T&C that are different from the T&C
+                of
+                a website only providing information (like a blog, a landing page, and so on).
+            </p>
+
+            <p>
+                T&C provide you as the website owner the ability to protect yourself from potential legal exposure, but
+                this may differ from jurisdiction to jurisdiction, so make sure to receive local legal advice if you are
+                trying to protect yourself from legal exposure.
+            </p>
+        </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="border-t border-gray-300 pt-10 pb-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <h2 class="text-3xl font-bold text-gray-800">What to Include in the T&C Document</h2>
+
+        <p class="text-gray-700 leading-relaxed">
+            Generally speaking, T&C often address these types of issues: Who is allowed to use the website; the possible
+            payment methods; a declaration that the website owner may change his or her offering in the future; the
+            types of warranties the website owner gives his or her customers; a reference to issues of intellectual
+            property or copyrights, where relevant; the website owner’s right to suspend or cancel a member’s account;
+            and much, much more.
+        </p>
+    </div>
+
+    <!-- Footer spacing -->
+    <div class="h-10"></div>
+
+</div>
+
+{% endblock body %}

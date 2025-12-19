@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Forgot -{% endblock title %}
+{% block body %}
+<div class="flex items-center justify-center min-h-screen bg-[#f6f6f6] font-poppins font-normal">
+
+    <div class="bg-white border border-gray-200 p-10 rounded-2xl w-[400px] shadow-lg">
+
+        <!-- Heading -->
+        <h1 class="text-center text-3xl font-bold mb-3 text-[#ae3a00]">Forgot Password</h1>
+
+        <p class="text-center text-gray-500 text-sm mb-6">
+            Enter your registered email and we’ll send you a reset link.
+        </p>
+
+        <!-- Success / Error Messages -->
+        {% if error %}
+        <p class="text-center text-red-500 mb-3">{{ error }}</p>
+        {% endif %}
+
+        {% if success %}
+        <p class="text-center text-green-600 mb-3 font-semibold">{{ success }}</p>
+        {% endif %}
+
+        <!-- FORM -->
+        <form action="/forgot_password" method="POST" class="space-y-5">
+
+            <div>
+                <label class="text-sm font-semibold text-gray-700">Email Address</label>
+                <input type="email" name="email" placeholder="yourname@example.com"
+                       class="w-full p-3 mt-1 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-[#ae3a00]"
+                       required>
+            </div>
+
+            <button class="w-full bg-[#ae3a00] hover:bg-[#8a2e00] p-3 rounded-lg text-white font-semibold transition">
+                Send Reset Link
+            </button>
+        </form>
+
+        <!-- Back to Login -->
+        <div class="text-center mt-6 text-gray-600">
+            Remember your password?
+            <a href="/login" class="text-[#ae3a00] hover:underline font-semibold">Log In</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+# media / uploads
+static/highlights/
+static/uploads/
+*.mp4
+
+# python
+env/
+venv/
+__pycache__/
+*.pyc
+.env
+instance/
+
+# node
+node_modules/

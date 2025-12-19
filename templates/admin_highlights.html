@@ -1,0 +1,20 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">All Highlights</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    {% for h in highlights %}
+    <div class="bg-black rounded-xl overflow-hidden">
+
+        <video src="{{ url_for('static', filename=h.video_file) }}"
+               class="w-full h-60 object-cover"
+               muted loop></video>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

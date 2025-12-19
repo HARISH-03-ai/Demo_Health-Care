@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page- SEHATRA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <script src="{{ url_for('static', filename='js/test.js') }}"></script>
+</head>
+
+<body>
+    <div class="bg-gray-100 flex justify-center items-center h-screen font-poppins font-normal">
+        <div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 m-4">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Admin Login</h2>
+
+            {% if error %}
+            <div
+                class="transition-all duration-300 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 animate-pulse">
+                <strong class="font-bold">Error:</strong> {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/admin_login" method="POST" class="space-y-5">
+
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Username</label>
+                    <input name="username" type="text" required
+                        class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-black">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Password</label>
+                    <input name="password" type="password" required
+                        class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-black">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-black text-white rounded-lg py-3 text-lg font-semibold hover:bg-gray-800 transition">
+                    Login as Admin
+                </button>
+
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} -{% endblock title %}
+{% block body %}
+
+<div class="w-full min-h-screen pt-28 px-10 flex justify-center font-poppins font-normal">
+
+    <div class="w-[95%] lg:w-[90%] bg-white rounded-3xl shadow-xl p-8 grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <!-- LEFT: IMAGE -->
+        <div class="w-full">
+            <img loading="lazy" src="{{ product.image_url }}" alt="{{ product.name }}"
+                class="w-full rounded-3xl object-cover max-h-[550px]">
+        </div>
+
+        <!-- RIGHT: DETAILS -->
+        <div class="flex flex-col gap-6">
+
+            <div>
+                <h1 class="text-3xl lg:text-4xl font-bold text-[#2d5143]">{{ product.name }}</h1>
+                <p class="mt-2 text-xl font-semibold">₹{{ product.price }}</p>
+                <p class="mt-3 text-gray-600 text-sm lg:text-base">
+                    {{ product.description }}
+                </p>
+            </div>
+
+            <!-- LOGIN REQUIRED POPUP -->
+            <div id="loginPopup"
+                class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50 hidden">
+
+                <div class="bg-white w-[90%] max-w-sm p-8 rounded-2xl shadow-2xl text-center">
+
+                    <h2 class="text-2xl font-bold text-[#2d5143]">Login Required</h2>
+                    <p class="text-gray-600 mt-2">Please login to continue your purchase.</p>
+
+                    <div class="mt-6 flex justify-center gap-4">
+                        <button onclick="closePopup()"
+                            class="px-5 py-2 rounded-lg border border-gray-400 hover:bg-gray-100">
+                            Cancel
+                        </button>
+
+                        <button onclick="window.location.href='/login'"
+                            class="px-6 py-2 rounded-lg bg-[#2d5143] text-white hover:bg-[#234236]">
+                            Login
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- QUANTITY + BUY NOW (WhatsApp) -->
+            <div class="flex items-center gap-4 mt-2">
+                <div class="flex items-center border rounded-full px-4 py-2 gap-4">
+                    <button id="qtyMinus" class="text-xl">-</button>
+                    <span id="qtyValue" class="text-lg font-semibold">1</span>
+                    <button id="qtyPlus" class="text-xl">+</button>
+                </div>
+
+                <button id="buyNowBtn"
+                    class="bg-[#E1F861] text-[#2d5143] font-semibold border border-black rounded-full py-3 hover:opacity-80 flex-1">
+                    buy now
+                </button>
+            </div>
+
+            <!-- PRODUCT INFO -->
+            <div class="mt-4">
+                <h2 class="text-2xl font-semibold mb-2">product info</h2>
+                <p class="text-gray-600 text-sm lg:text-base">
+                    {{ product.details }}
+                </p>
+            </div>
+
+            <!-- RETURN & REFUND
+            <div class="mt-4">
+                <h2 class="text-2xl font-semibold mb-2">return & refund policy</h2>
+                <p class="text-gray-600 text-sm lg:text-base">
+                    {{ product.refund_policy }}
+                </p>
+            </div>
+
+            SHIPPING INFO
+            <div class="mt-4">
+                <h2 class="text-2xl font-semibold mb-2">shipping info</h2>
+                <p class="text-gray-600 text-sm lg:text-base">
+                    {{ product.shipping_info }}
+                </p>
+             </div> -->
+
+            <!-- SHARE BUTTON -->
+            <div class="mt-4 flex items-center gap-3">
+                <button id="shareBtn" class="px-4 py-2 border rounded-full text-sm font-medium hover:bg-gray-100">
+                    share product
+                </button>
+                <span id="shareMsg" class="text-xs text-gray-500"></span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ⭐ REVIEWS SECTION -->
+<div class="w-full flex justify-center py-16 font-poppins font-normal">
+    <div class="w-[95%] lg:w-[80%]">
+
+        <h2 class="text-3xl font-bold text-[#2d5143] mb-6">Customer Reviews</h2>
+
+        <!-- ⭐ IF REVIEWS EXIST -->
+        {% if reviews %}
+        <div class="space-y-4">
+            {% for r in reviews %}
+            <div class="bg-white p-5 rounded-2xl shadow hover:shadow-md transition">
+                <div class="flex items-center justify-between">
+                    <p class="font-semibold text-lg">{{ r.user.name }}</p>
+
+                    <!-- Rating Stars -->
+                    <div class="flex text-yellow-500">
+                        {% for i in range(r.rating | int) %}
+                        ⭐
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <p class="text-gray-700 mt-2 leading-relaxed">
+                    {{ r.review_text }}
+                </p>
+
+                <p class="text-gray-400 text-xs mt-2">
+                    Reviewed on {{ r.created_at.strftime('%d %b %Y') }}
+                </p>
+
+                {% if r.admin_reply %}
+                <div class="bg-orange-50 border border-orange-300 p-3 rounded-lg mt-2">
+                    <p class="font-semibold text-orange-700">Admin Reply:</p>
+                    <p class="text-orange-900">{{ r.admin_reply }}</p>
+                </div>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <p class="text-gray-500 text-sm mb-6">
+            No reviews yet — Be the first to share your experience!
+        </p>
+        {% endif %}
+
+        <hr class="my-8 border-gray-300">
+
+        <!-- ⭐ WRITE A REVIEW -->
+        {% if session.get('user_id') %}
+        <h3 class="text-xl font-semibold text-[#2d5143] mb-3">Write a Review</h3>
+
+        {% if alert_msg %}
+        <div class="w-full mb-4">
+            <div class="p-4 rounded-xl text-sm
+        {% if alert_type == 'error' %}
+            bg-red-100 text-red-700 border border-red-300
+        {% elif alert_type == 'success' %}
+            bg-green-100 text-green-700 border border-green-300
+        {% endif %}
+    ">
+                <pre class="whitespace-pre-wrap font-sans">
+{{ alert_msg }}
+        </pre>
+            </div>
+        </div>
+        {% endif %}
+
+
+        <form action="/add_review/{{ product.id }}" method="POST" class="space-y-4 bg-white p-6 rounded-2xl shadow">
+
+            <!-- Modern Star Rating -->
+            <div>
+                <label class="block text-gray-700 mb-2 font-medium">Your Rating</label>
+
+                <div id="starContainer" class="flex gap-2 text-3xl cursor-pointer select-none">
+                    <span data-value="1" class="star text-gray-400">★</span>
+                    <span data-value="2" class="star text-gray-400">★</span>
+                    <span data-value="3" class="star text-gray-400">★</span>
+                    <span data-value="4" class="star text-gray-400">★</span>
+                    <span data-value="5" class="star text-gray-400">★</span>
+                </div>
+
+                <!-- Hidden input (Flask backend ko yahi value milti hai) -->
+                <input type="hidden" name="rating" id="ratingValue" required>
+            </div>
+
+
+            <!-- Review Text -->
+            <div>
+                <label class="block text-gray-700 mb-1 font-medium">Your Review</label>
+                <textarea name="review" rows="4" placeholder="Share your experience..."
+                    class="w-full border border-gray-300 p-3 rounded-lg outline-none" required></textarea>
+            </div>
+
+            <button
+                class="bg-[#E1F861] text-[#2d5143] w-full py-3 rounded-lg border border-black font-semibold hover:opacity-80">
+                Submit Review
+            </button>
+        </form>
+
+        {% else %}
+        <div class="text-center mt-4">
+            <p class="text-red-500 text-sm">You must be logged in to write a review.</p>
+            <a href="/login" class="inline-block mt-3 bg-[#2d5143] text-white px-6 py-2 rounded-lg hover:bg-[#234236]">
+                Login Now
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+
+<!-- JS: Quantity + WhatsApp + Share -->
+<script>
+    const minusBtn = document.getElementById("qtyMinus");
+    const plusBtn = document.getElementById("qtyPlus");
+    const qtyValue = document.getElementById("qtyValue");
+    const buyNowBtn = document.getElementById("buyNowBtn");
+
+    minusBtn.onclick = () => {
+        let q = parseInt(qtyValue.innerText);
+        if (q > 1) qtyValue.innerText = q - 1;
+    };
+
+    plusBtn.onclick = () => {
+        let q = parseInt(qtyValue.innerText);
+        qtyValue.innerText = q + 1;
+    };
+
+    const isLoggedIn = {{ "true" if session.get("user_id") else "false" }};
+
+    function openPopup() {
+        document.getElementById("loginPopup").classList.remove("hidden");
+    }
+
+    function closePopup() {
+        document.getElementById("loginPopup").classList.add("hidden");
+    }
+
+    buyNowBtn.onclick = () => {
+        if (!isLoggedIn) {
+            openPopup();
+            return;
+        }
+
+        const qty = qtyValue.innerText;
+        const msg = `Hi, I want to buy this product\nProduct name: '{{ product.name }}'\nProduct Id: (ID: {{ product.id }}).\nPrice: ₹{{ product.price }}\nQuantity: ${qty}`;
+        const url = "https://wa.me/919970839647?text=" + encodeURIComponent(msg);
+        window.open(url, "_blank");
+    };
+
+
+
+    // SHARE BUTTON
+    const shareBtn = document.getElementById("shareBtn");
+    const shareMsg = document.getElementById("shareMsg");
+
+    shareBtn.onclick = async () => {
+        const url = "{{ share_url }}";
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "{{ product.name }}",
+                    text: "Check out this product from Sehatra",
+                    url: url
+                });
+            } catch (e) { }
+        } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(url);
+            shareMsg.innerText = "Link copied!";
+            setTimeout(() => shareMsg.innerText = "", 2000);
+        } else {
+            alert("Copy this link: " + url);
+        }
+    };
+
+    // Modern Star Rating Script
+    const stars = document.querySelectorAll(".star");
+    const ratingInput = document.getElementById("ratingValue");
+
+    stars.forEach(star => {
+        star.addEventListener("mouseover", () => {
+            const val = star.getAttribute("data-value");
+            highlightStars(val);
+        });
+
+        star.addEventListener("click", () => {
+            const val = star.getAttribute("data-value");
+            ratingInput.value = val;
+            highlightStars(val);
+        });
+    });
+
+    document.getElementById("starContainer").addEventListener("mouseleave", () => {
+        highlightStars(ratingInput.value || 0);
+    });
+
+    function highlightStars(limit) {
+        stars.forEach(star => {
+            if (star.getAttribute("data-value") <= limit) {
+                star.classList.remove("text-gray-400");
+                star.classList.add("text-yellow-400", "scale-110");
+            } else {
+                star.classList.add("text-gray-400");
+                star.classList.remove("text-yellow-400", "scale-110");
+            }
+        });
+    }
+
+</script>
+
+{% endblock body %}
