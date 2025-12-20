@@ -6,34 +6,27 @@ from datetime import datetime, timedelta
 from urllib.parse import quote_plus
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
-import resend
 from email_service import send_email
 from flask_mail import Mail
 
 app = Flask(__name__)
 app.secret_key = "harish2004"
 
-mail = Mail(app)
-
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///file.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
-app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT"))
+app.config["MAIL_SERVER"] = "smtp.resend.com"
+app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USE_TLS"] = False
-app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
 
-MAIL_SERVER = smtp.resend.com
-MAIL_PORT = 465
-MAIL_USE_SSL = True
-MAIL_USERNAME = resend
-MAIL_PASSWORD = "RESEND_API_KEY"
-MAIL_DEFAULT_SENDER = "MAIL_USERNAME"
+app.config["MAIL_USERNAME"] = "resend"
+app.config["MAIL_PASSWORD"] = os.getenv("RESEND_API_KEY")
+app.config["MAIL_DEFAULT_SENDER"] = "Sehatra <onboarding@resend.dev>"
+
+mail = Mail(app)
 
 
 
@@ -108,10 +101,12 @@ def contact_page():
         """
 
         send_email(
-            subject="New Contact Form Submission",
-            recipients=[app.config["MAIL_DEFAULT_SENDER"]],
+            mail,
+            subject="Verify Your Email - Sehatra",
+            recipients=[email],
             html_body=html
-        )
+            )
+
 
         return render_template(
             "contact.html",
@@ -464,7 +459,7 @@ def signup():
         name=name,
         email=email,
         phone=phone,
-        password=password,
+        password=generate_password_hash(password),
         verification_token=token,
         is_verified=False
     )
@@ -485,10 +480,11 @@ def signup():
     """
 
     send_email(
-        subject="Verify Your Email - Sehatra",
-        recipients=[email],
-        html_body=html
-    )
+            mail,
+            subject="Verify Your Email - Sehatra",
+            recipients=[email],
+            html_body=html
+            )
 
     return render_template(
         "signup.html",
@@ -521,7 +517,7 @@ def login():
     )
 
 
-    if user.password != password:
+    if not check_password_hash(user.password, password):
         return render_template("login.html", alert_type="error", alert_msg="Incorrect password!")
 
     # SUCCESS
@@ -587,10 +583,11 @@ def forgot_password():
     """
 
     sent = send_email(
-        subject="Reset Your Password - Sehatra",
-        recipients=[email],
-        html_body=html
-    )
+            mail,
+            subject="Verify Your Email - Sehatra",
+            recipients=[email],
+            html_body=html
+            )
 
     if not sent:
         return render_template(
@@ -836,10 +833,11 @@ def resend_verification():
     """
 
     sent = send_email(
-        subject="Verify your email - Sehatra",
-        recipients=[email],
-        html_body=html
-    )
+            mail,
+            subject="Verify Your Email - Sehatra",
+            recipients=[email],
+            html_body=html
+            )
 
     if not sent:
         return render_template(

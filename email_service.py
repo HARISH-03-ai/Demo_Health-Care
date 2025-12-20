@@ -1,13 +1,12 @@
 from flask_mail import Message
-from main import mail   # agar circular ho to main se import adjust karo
 
-def send_email(subject, recipients, html_body):
+def send_email(mail, subject, recipients, html_body):
     try:
         msg = Message(
             subject=subject,
-            recipients=recipients
+            recipients=recipients,
+            html=html_body
         )
-        msg.html = html_body
         mail.send(msg)
         return True
     except Exception as e:
