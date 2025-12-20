@@ -82,28 +82,32 @@ def contact_page():
         db.session.add(new_msg)
         db.session.commit()
 
-        # Auto Email Send
-        msg = Message("New Contact Form Submission",
-                      sender=app.config["MAIL_USERNAME"],
-                      recipients=[app.config["MAIL_USERNAME"]])
+        # SEND EMAIL USING RESEND
+        try:
+            resend.emails.send({
+                "from": "Sehatra Contact <onboarding@resend.dev>",
+                "to": ["editzharshu0508@gmail.com"],  # 👉 yahan apna admin email
+                "subject": "New Contact Form Submission",
+                "html": f"""
+                    <h3>New Contact Message</h3>
+                    <p><b>Name:</b> {name}</p>
+                    <p><b>Gender:</b> {gender}</p>
+                    <p><b>Email:</b> {email}</p>
+                    <p><b>Phone:</b> {phone}</p>
+                    <p><b>Message:</b><br>{message}</p>
+                    <p><small>Submitted on: {datetime.utcnow().strftime('%d-%m-%Y %H:%M')}</small></p>
+                """
+            })
+        except Exception as e:
+            print("Contact email error:", e)
 
-
-        msg.body = f"""
-A new contact form has been submitted:
-
-Name: {name}
-Gender: {gender}
-Email: {email}
-Phone: {phone}
-
-Message:
-{message}
-
-Submitted on: {datetime.utcnow().strftime('%d-%m-%Y %H:%M')}
-"""
-        mail.send(msg)
+        return render_template(
+            "contact.html",
+            success="Message sent successfully! We will contact you soon."
+        )
 
     return render_template("contact.html")
+
 
 
 ADMIN_USERNAME = "admin"
@@ -435,17 +439,12 @@ def signup():
     phone = request.form["phone"]
     password = request.form["password"]
 
+    # duplicate checks
     if User.query.filter_by(email=email).first():
-        return render_template(
-            "signup.html",
-            error="This email is already registered! Please log in."
-        )
+        return render_template("signup.html", error="This email is already registered!")
 
     if User.query.filter_by(phone=phone).first():
-        return render_template(
-            "signup.html",
-            error="This phone number is already registered!"
-        )
+        return render_template("signup.html", error="This phone number is already registered!")
 
     token = str(uuid.uuid4())
 
@@ -461,10 +460,32 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
 
+    # 🔗 verification link
+    verify_link = request.host_url.rstrip("/") + "/verify/" + token
+
+    # 📧 SEND EMAIL USING RESEND
+    try:
+        resend.emails.send({
+            "from": "Sehatra <onboarding@resend.dev>",
+            "to": email,
+            "subject": "Verify your email - Sehatra",
+            "html": f"""
+                <h2>Welcome to Sehatra 👋</h2>
+                <p>Please verify your email to activate your account:</p>
+                <a href="{verify_link}" style="padding:10px 15px;background:#ae3a00;color:white;text-decoration:none;border-radius:6px;">
+                    Verify Email
+                </a>
+                <p>If you didn't sign up, ignore this email.</p>
+            """
+        })
+    except Exception as e:
+        print("Email failed but user created:", e)
+
     return render_template(
         "signup.html",
-        success="Account created successfully! Please login and verify your email."
+        success="Account created! Please check your email to verify."
     )
+
 
 
 
@@ -542,22 +563,40 @@ def forgot_password():
 
     # Generate token
     token = str(uuid.uuid4())
-
     user.reset_token = token
     user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
     db.session.commit()
 
-    reset_link = request.host_url + "reset_password/" + token
+    reset_link = request.host_url.rstrip("/") + "/reset_password/" + token
 
-    # Send email
-    msg = Message("Reset Your Password - Sehatra",
-                  sender=app.config["MAIL_USERNAME"],
-                  recipients=[email])
+    try:
+        resend.emails.send({
+            "from": "Sehatra <onboarding@resend.dev>",
+            "to": email,
+            "subject": "Reset Your Password - Sehatra",
+            "html": f"""
+                <h3>Password Reset</h3>
+                <p>Click the button below to reset your password:</p>
+                <a href="{reset_link}"
+                   style="padding:10px 15px;background:#ae3a00;color:white;
+                          text-decoration:none;border-radius:5px;">
+                   Reset Password
+                </a>
+                <p><small>Valid for 30 minutes</small></p>
+            """
+        })
+    except Exception as e:
+        print("Resend error:", e)
+        return render_template(
+            "forgot.html",
+            error="Email service busy. Please try again later."
+        )
 
-    msg.body = f"Click this link to reset your password:\n{reset_link}\n\nValid for 30 minutes."
-    mail.send(msg)
+    return render_template(
+        "forgot.html",
+        success="Password reset link sent! Check inbox/spam."
+    )
 
-    return render_template("forgot.html", success="Password reset link sent to your email!")
 
 
 
@@ -763,7 +802,6 @@ def resend_verification():
     email = request.form["email"]
 
     user = User.query.filter_by(email=email).first()
-
     if not user:
         return render_template(
             "login.html",
@@ -774,33 +812,37 @@ def resend_verification():
     if user.is_verified:
         return redirect("/login")
 
-    # New token
     token = str(uuid.uuid4())
     user.verification_token = token
     db.session.commit()
 
     verify_link = request.host_url.rstrip("/") + "/verify/" + token
 
-    msg = Message(
-        "Verify Your Email - Sehatra",
-        sender=app.config["MAIL_USERNAME"],
-        recipients=[email]
-    )
-    msg.body = f"Click to verify your email:\n\n{verify_link}"
-
     try:
-        mail.send(msg)
-        return render_template(
-            "login.html",
-            alert_type="success",
-            alert_msg="Verification email sent again! Please check inbox/spam."
-        )
-    except Exception:
+        resend.emails.send({
+            "from": "Sehatra <onboarding@resend.dev>",
+            "to": email,
+            "subject": "Verify your email - Sehatra",
+            "html": f"""
+                <h3>Email Verification</h3>
+                <p>Click below to verify your account:</p>
+                <a href="{verify_link}">Verify Email</a>
+            """
+        })
+    except Exception as e:
+        print("Resend error:", e)
         return render_template(
             "login.html",
             alert_type="error",
-            alert_msg="Email service busy. Please try again later."
+            alert_msg="Email service busy. Try again later."
         )
+
+    return render_template(
+        "login.html",
+        alert_type="success",
+        alert_msg="Verification email sent again! Check inbox/spam."
+    )
+
 
 
 
