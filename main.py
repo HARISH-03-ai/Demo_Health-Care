@@ -450,6 +450,13 @@ def signup():
             "signup.html",
             error="This email is already registered! Please log in."
         )
+    
+    existing_user_phone = User.query.filter_by(phone=phone).first()
+    if existing_user_phone:
+        return render_template(
+            "signup.html",
+            error="This phone number is already registered!"
+            )
 
     # NEW USER CREATION
     token = str(uuid.uuid4())
@@ -477,12 +484,14 @@ def signup():
 
     try:
         mail.send(msg)
-        return render_template(
-            "signup.html",
-            success="Verification email sent! Check your inbox/spam folder."
-        )
+        print("Verification mail sent")
     except Exception as e:
-        return render_template("signup.html", error=f"Email sending failed: {e}")
+        print("Mail skipped:", e)
+    return render_template(
+        "signup.html",
+        success="Account created successfully! Please check email for verification (if not received, try later)."
+        )
+
 
 
 
