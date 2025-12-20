@@ -3,10 +3,10 @@ from models import db, HeroSection, Product, ContactMessage, Review, User, Highl
 import os
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-from flask_mail import Mail, Message
 from urllib.parse import quote_plus
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+import resend
 
 app = Flask(__name__)
 app.secret_key = "harish2004"
@@ -16,13 +16,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///file.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
-app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")  # normal password nahi chalega
-
-mail = Mail(app)
+resend.api_key = os.getenv("RESEND_API_KEY")
 app.config['MAIL_TIMEOUT'] = 10  # seconds
 
 
