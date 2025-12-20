@@ -3,7 +3,7 @@ import resend
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
-FROM_EMAIL = "Sehatra <onboarding@resend.dev>"  # abhi ye use karo
+FROM_EMAIL = "onboarding@resend.dev"  # abhi ye use karo
 
 
 def send_verification_email(to_email, verify_link):
