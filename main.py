@@ -7,6 +7,7 @@ from urllib.parse import quote_plus
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import resend
+from email_service import send_verification_email
 
 app = Flask(__name__)
 app.secret_key = "harish2004"
@@ -439,52 +440,36 @@ def signup():
     phone = request.form["phone"]
     password = request.form["password"]
 
-    # duplicate checks
     if User.query.filter_by(email=email).first():
-        return render_template("signup.html", error="This email is already registered!")
-
-    if User.query.filter_by(phone=phone).first():
-        return render_template("signup.html", error="This phone number is already registered!")
+        return render_template("signup.html", error="Email already registered")
 
     token = str(uuid.uuid4())
 
-    new_user = User(
+    user = User(
         name=name,
         email=email,
-        password=password,
         phone=phone,
+        password=password,
         verification_token=token,
         is_verified=False
     )
 
-    db.session.add(new_user)
+    db.session.add(user)
     db.session.commit()
 
-    # 🔗 verification link
-    verify_link = request.host_url.rstrip("/") + "/verify/" + token
+    verify_link = request.host_url + "verify/" + token
 
-    # 📧 SEND EMAIL USING RESEND
     try:
-        resend.emails.send({
-            "from": "Sehatra <onboarding@resend.dev>",
-            "to": email,
-            "subject": "Verify your email - Sehatra",
-            "html": f"""
-                <h2>Welcome to Sehatra 👋</h2>
-                <p>Please verify your email to activate your account:</p>
-                <a href="{verify_link}" style="padding:10px 15px;background:#ae3a00;color:white;text-decoration:none;border-radius:6px;">
-                    Verify Email
-                </a>
-                <p>If you didn't sign up, ignore this email.</p>
-            """
-        })
+        send_verification_email(email, verify_link)
     except Exception as e:
-        print("Email failed but user created:", e)
+        print("Email API failed:", e)
+        # ❗ DO NOT BREAK SIGNUP
 
     return render_template(
         "signup.html",
-        success="Account created! Please check your email to verify."
+        success="Account created! Check email to verify."
     )
+
 
 
 
