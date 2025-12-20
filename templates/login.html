@@ -16,8 +16,18 @@
     p-4 rounded-xl text-center font-medium mb-4 shadow
 ">
             {{ alert_msg }}
+
+            {% if alert_type == 'warning' %}
+            <form action="/resend-verification" method="post" class="mt-3">
+                <input type="hidden" name="email" value="{{ request.form.email }}">
+                <button type="submit" class="text-[#ae3a00] font-semibold hover:underline">
+                    Resend Verification Email
+                </button>
+            </form>
+            {% endif %}
         </div>
         {% endif %}
+
 
 
         <form action="/login" method="POST" class="space-y-4">
