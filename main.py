@@ -441,24 +441,18 @@ def signup():
     phone = request.form["phone"]
     password = request.form["password"]
 
-    # -----------------------------
-    # CHECK IF USER ALREADY EXISTS
-    # -----------------------------
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
+    if User.query.filter_by(email=email).first():
         return render_template(
             "signup.html",
             error="This email is already registered! Please log in."
         )
-    
-    existing_user_phone = User.query.filter_by(phone=phone).first()
-    if existing_user_phone:
+
+    if User.query.filter_by(phone=phone).first():
         return render_template(
             "signup.html",
             error="This phone number is already registered!"
-            )
+        )
 
-    # NEW USER CREATION
     token = str(uuid.uuid4())
 
     new_user = User(
@@ -469,28 +463,15 @@ def signup():
         verification_token=token,
         is_verified=False
     )
+
     db.session.add(new_user)
     db.session.commit()
 
-    # SEND VERIFICATION EMAIL
-    verify_link = request.host_url.rstrip("/") + "/verify/" + token
-
-    msg = Message(
-        "Verify Your Email - Sehatra",
-        sender=app.config["MAIL_USERNAME"],
-        recipients=[email]
-    )
-    msg.body = f"Click this link to verify your email:\n\n{verify_link}"
-
-    try:
-        mail.send(msg)
-        print("Verification mail sent")
-    except Exception as e:
-        print("Mail skipped:", e)
     return render_template(
         "signup.html",
-        success="Account created successfully! Please check email for verification (if not received, try later)."
-        )
+        success="Account created successfully! Please login and verify your email."
+    )
+
 
 
 
@@ -510,7 +491,13 @@ def login():
         return render_template("login.html", alert_type="error", alert_msg="User does not exist!")
 
     if not user.is_verified:
-        return render_template("login.html", alert_type="warning", alert_msg="Please verify your email first!")
+        return render_template(
+            "login.html",
+            alert_type="warning",
+            alert_msg="Please verify your email first!",
+            email=email
+    )
+
 
     if user.password != password:
         return render_template("login.html", alert_type="error", alert_msg="Incorrect password!")
@@ -775,6 +762,52 @@ def delete_highlight(id):
 def highlight():
     highlights = Highlight.query.order_by(Highlight.created_at.desc()).all()
     return render_template("highlight.html", highlights=highlights)
+
+
+@app.route("/resend-verification", methods=["POST"])
+def resend_verification():
+    email = request.form["email"]
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return render_template(
+            "login.html",
+            alert_type="error",
+            alert_msg="User not found!"
+        )
+
+    if user.is_verified:
+        return redirect("/login")
+
+    # New token
+    token = str(uuid.uuid4())
+    user.verification_token = token
+    db.session.commit()
+
+    verify_link = request.host_url.rstrip("/") + "/verify/" + token
+
+    msg = Message(
+        "Verify Your Email - Sehatra",
+        sender=app.config["MAIL_USERNAME"],
+        recipients=[email]
+    )
+    msg.body = f"Click to verify your email:\n\n{verify_link}"
+
+    try:
+        mail.send(msg)
+        return render_template(
+            "login.html",
+            alert_type="success",
+            alert_msg="Verification email sent again! Please check inbox/spam."
+        )
+    except Exception:
+        return render_template(
+            "login.html",
+            alert_type="error",
+            alert_msg="Email service busy. Please try again later."
+        )
+
 
 
 
