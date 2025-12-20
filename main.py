@@ -7,18 +7,34 @@ from urllib.parse import quote_plus
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import resend
-from email_service import send_verification_email
+from email_service import send_email
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.secret_key = "harish2004"
+
+mail = Mail(app)
 
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///file.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-resend.api_key = os.getenv("RESEND_API_KEY")
-app.config['MAIL_TIMEOUT'] = 10  # seconds
+app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
+app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT"))
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
+
+MAIL_SERVER = smtp.resend.com
+MAIL_PORT = 465
+MAIL_USE_SSL = True
+MAIL_USERNAME = resend
+MAIL_PASSWORD = "RESEND_API_KEY"
+MAIL_DEFAULT_SENDER = "MAIL_USERNAME"
+
 
 
 db.init_app(app)
@@ -72,7 +88,6 @@ def contact_page():
         phone = request.form["phone"]
         message = request.form["message"]
 
-        # Save into database
         new_msg = ContactMessage(
             name=name,
             gender=gender,
@@ -83,24 +98,20 @@ def contact_page():
         db.session.add(new_msg)
         db.session.commit()
 
-        # SEND EMAIL USING RESEND
-        try:
-            resend.emails.send({
-                "from": "Sehatra Contact <onboarding@resend.dev>",
-                "to": ["editzharshu0508@gmail.com"],  # 👉 yahan apna admin email
-                "subject": "New Contact Form Submission",
-                "html": f"""
-                    <h3>New Contact Message</h3>
-                    <p><b>Name:</b> {name}</p>
-                    <p><b>Gender:</b> {gender}</p>
-                    <p><b>Email:</b> {email}</p>
-                    <p><b>Phone:</b> {phone}</p>
-                    <p><b>Message:</b><br>{message}</p>
-                    <p><small>Submitted on: {datetime.utcnow().strftime('%d-%m-%Y %H:%M')}</small></p>
-                """
-            })
-        except Exception as e:
-            print("Contact email error:", e)
+        html = f"""
+        <h3>New Contact Message</h3>
+        <p><b>Name:</b> {name}</p>
+        <p><b>Gender:</b> {gender}</p>
+        <p><b>Email:</b> {email}</p>
+        <p><b>Phone:</b> {phone}</p>
+        <p><b>Message:</b><br>{message}</p>
+        """
+
+        send_email(
+            subject="New Contact Form Submission",
+            recipients=[app.config["MAIL_DEFAULT_SENDER"]],
+            html_body=html
+        )
 
         return render_template(
             "contact.html",
@@ -108,6 +119,7 @@ def contact_page():
         )
 
     return render_template("contact.html")
+
 
 
 
@@ -462,18 +474,26 @@ def signup():
 
     verify_link = request.host_url.rstrip("/") + "/verify/" + token
 
-    sent = send_verification_email(email, verify_link)
+    html = f"""
+    <h3>Verify Your Email</h3>
+    <p>Click below to verify your account:</p>
+    <a href="{verify_link}"
+       style="padding:10px 15px;background:#ae3a00;color:white;
+              text-decoration:none;border-radius:5px;">
+       Verify Email
+    </a>
+    """
 
-    if not sent:
-        print("Email failed but user created")
+    send_email(
+        subject="Verify Your Email - Sehatra",
+        recipients=[email],
+        html_body=html
+    )
 
     return render_template(
         "signup.html",
         success="Account created! Please verify your email."
     )
-
-
-
 
 
 
@@ -548,7 +568,6 @@ def forgot_password():
     if not user:
         return render_template("forgot.html", error="Email not registered!")
 
-    # Generate token
     token = str(uuid.uuid4())
     user.reset_token = token
     user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
@@ -556,24 +575,24 @@ def forgot_password():
 
     reset_link = request.host_url.rstrip("/") + "/reset_password/" + token
 
-    try:
-        resend.emails.send({
-            "from": "Sehatra <onboarding@resend.dev>",
-            "to": email,
-            "subject": "Reset Your Password - Sehatra",
-            "html": f"""
-                <h3>Password Reset</h3>
-                <p>Click the button below to reset your password:</p>
-                <a href="{reset_link}"
-                   style="padding:10px 15px;background:#ae3a00;color:white;
-                          text-decoration:none;border-radius:5px;">
-                   Reset Password
-                </a>
-                <p><small>Valid for 30 minutes</small></p>
-            """
-        })
-    except Exception as e:
-        print("Resend error:", e)
+    html = f"""
+    <h3>Password Reset</h3>
+    <p>Click below to reset your password:</p>
+    <a href="{reset_link}"
+       style="padding:10px 15px;background:#ae3a00;color:white;
+              text-decoration:none;border-radius:5px;">
+       Reset Password
+    </a>
+    <p><small>Valid for 30 minutes</small></p>
+    """
+
+    sent = send_email(
+        subject="Reset Your Password - Sehatra",
+        recipients=[email],
+        html_body=html
+    )
+
+    if not sent:
         return render_template(
             "forgot.html",
             error="Email service busy. Please try again later."
@@ -799,25 +818,30 @@ def resend_verification():
     if user.is_verified:
         return redirect("/login")
 
+    # New token
     token = str(uuid.uuid4())
     user.verification_token = token
     db.session.commit()
 
     verify_link = request.host_url.rstrip("/") + "/verify/" + token
 
-    try:
-        resend.emails.send({
-            "from": "Sehatra <onboarding@resend.dev>",
-            "to": email,
-            "subject": "Verify your email - Sehatra",
-            "html": f"""
-                <h3>Email Verification</h3>
-                <p>Click below to verify your account:</p>
-                <a href="{verify_link}">Verify Email</a>
-            """
-        })
-    except Exception as e:
-        print("Resend error:", e)
+    html = f"""
+    <h3>Email Verification</h3>
+    <p>Click below to verify your account:</p>
+    <a href="{verify_link}"
+       style="padding:10px 15px;background:#ae3a00;color:white;
+              text-decoration:none;border-radius:5px;">
+       Verify Email
+    </a>
+    """
+
+    sent = send_email(
+        subject="Verify your email - Sehatra",
+        recipients=[email],
+        html_body=html
+    )
+
+    if not sent:
         return render_template(
             "login.html",
             alert_type="error",
@@ -829,6 +853,7 @@ def resend_verification():
         alert_type="success",
         alert_msg="Verification email sent again! Check inbox/spam."
     )
+
 
 
 

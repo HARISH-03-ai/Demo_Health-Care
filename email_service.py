@@ -1,24 +1,15 @@
-import os
-import resend
+from flask_mail import Message
+from main import mail   # agar circular ho to main se import adjust karo
 
-resend.api_key = os.getenv("RESEND_API_KEY")
-
-FROM_EMAIL = "onboarding@resend.dev"  # abhi ye use karo
-
-
-def send_verification_email(to_email, verify_link):
+def send_email(subject, recipients, html_body):
     try:
-        resend.Emails.send({
-            "from": FROM_EMAIL,
-            "to": [to_email],
-            "subject": "Verify your email - Sehatra",
-            "html": f"""
-                <h2>Welcome to Sehatra</h2>
-                <p>Please verify your email by clicking the link below:</p>
-                <a href="{verify_link}">Verify Email</a>
-            """
-        })
+        msg = Message(
+            subject=subject,
+            recipients=recipients
+        )
+        msg.html = html_body
+        mail.send(msg)
         return True
     except Exception as e:
-        print("Resend error:", e)
+        print("Email error:", e)
         return False
