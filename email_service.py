@@ -1,16 +1,24 @@
-import resend
 import os
+import resend
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
-def send_verification_email(email, verify_link):
-    resend.Emails.send({
-        "from": "Sehatra <onboarding@resend.dev>",
-        "to": email,
-        "subject": "Verify your email",
-        "html": f"""
-        <h3>Verify your email</h3>
-        <p>Click below to verify:</p>
-        <a href="{verify_link}">Verify Email</a>
-        """
-    })
+FROM_EMAIL = "Sehatra <onboarding@resend.dev>"  # abhi ye use karo
+
+
+def send_verification_email(to_email, verify_link):
+    try:
+        resend.Emails.send({
+            "from": FROM_EMAIL,
+            "to": [to_email],
+            "subject": "Verify your email - Sehatra",
+            "html": f"""
+                <h2>Welcome to Sehatra</h2>
+                <p>Please verify your email by clicking the link below:</p>
+                <a href="{verify_link}">Verify Email</a>
+            """
+        })
+        return True
+    except Exception as e:
+        print("Resend error:", e)
+        return False

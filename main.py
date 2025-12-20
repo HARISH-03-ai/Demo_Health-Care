@@ -443,6 +443,9 @@ def signup():
     if User.query.filter_by(email=email).first():
         return render_template("signup.html", error="Email already registered")
 
+    if User.query.filter_by(phone=phone).first():
+        return render_template("signup.html", error="Phone already registered")
+
     token = str(uuid.uuid4())
 
     user = User(
@@ -457,17 +460,16 @@ def signup():
     db.session.add(user)
     db.session.commit()
 
-    verify_link = request.host_url + "verify/" + token
+    verify_link = request.host_url.rstrip("/") + "/verify/" + token
 
-    try:
-        send_verification_email(email, verify_link)
-    except Exception as e:
-        print("Email API failed:", e)
-        # ❗ DO NOT BREAK SIGNUP
+    sent = send_verification_email(email, verify_link)
+
+    if not sent:
+        print("Email failed but user created")
 
     return render_template(
         "signup.html",
-        success="Account created! Check email to verify."
+        success="Account created! Please verify your email."
     )
 
 
