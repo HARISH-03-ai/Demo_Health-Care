@@ -23,6 +23,7 @@ app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")  # normal password nahi chalega
 
 mail = Mail(app)
+app.config['MAIL_TIMEOUT'] = 10  # seconds
 
 
 db.init_app(app)
