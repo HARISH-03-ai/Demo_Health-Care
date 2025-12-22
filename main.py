@@ -7,26 +7,15 @@ from urllib.parse import quote_plus
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 from email_service import send_email
-from flask_mail import Mail
 
 app = Flask(__name__)
-app.secret_key = "harish2004"
+app.secret_key = os.getenv("SECRET_KEY")
 
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///file.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["MAIL_SERVER"] = "smtp.resend.com"
-app.config["MAIL_PORT"] = 465
-app.config["MAIL_USE_SSL"] = True
-app.config["MAIL_USE_TLS"] = False
-
-app.config["MAIL_USERNAME"] = "resend"
-app.config["MAIL_PASSWORD"] = os.getenv("RESEND_API_KEY")
-app.config["MAIL_DEFAULT_SENDER"] = "Sehatra <onboarding@resend.dev>"
-
-mail = Mail(app)
 
 
 
@@ -100,26 +89,21 @@ def contact_page():
         <p><b>Message:</b><br>{message}</p>
         """
 
-        send_email(
-            mail,
-            subject="Verify Your Email - Sehatra",
-            recipients=[email],
-            html_body=html
-            )
-
-
-        return render_template(
-            "contact.html",
-            success="Message sent successfully! We will contact you soon."
-        )
+        sent = send_email(
+    subject="New Contact Message",
+    to_email="admin@email.com",  # apna admin email
+    html=html
+)
+        if not sent:
+            return render_template("contact.html", error="Email service busy")
 
     return render_template("contact.html")
 
 
 
 
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "12345"
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 @app.route("/admin_login", methods=["GET", "POST"])
 def admin_login():
@@ -479,17 +463,13 @@ def signup():
     </a>
     """
 
-    send_email(
-            mail,
-            subject="Verify Your Email - Sehatra",
-            recipients=[email],
-            html_body=html
-            )
-
-    return render_template(
-        "signup.html",
-        success="Account created! Please verify your email."
-    )
+    sent = send_email(
+    subject="Verify your email",
+    to_email=email,
+    html=html
+)
+    if not sent:
+        return render_template("signup.html", error="Email service busy, try again")
 
 
 
@@ -583,11 +563,11 @@ def forgot_password():
     """
 
     sent = send_email(
-            mail,
-            subject="Verify Your Email - Sehatra",
-            recipients=[email],
-            html_body=html
-            )
+    subject="Reset Password",
+    to_email=email,
+    html=f"<a href='{reset_link}'>Reset</a>"
+)
+
 
     if not sent:
         return render_template(
@@ -617,7 +597,7 @@ def reset_password(token):
 
     if request.method == "POST":
         new_pass = request.form["password"]
-        user.password = new_pass
+        user.password = generate_password_hash(new_pass)
         user.reset_token = None
         user.reset_token_expiry = None
 
@@ -686,7 +666,7 @@ def edit_profile():
         # UPDATE PASSWORD (only if entered)
         new_pass = request.form.get("password", "").strip()
         if new_pass:
-            user.password = new_pass
+            user.password = generate_password_hash(new_pass)
 
         db.session.commit()
         return redirect("/")
@@ -833,11 +813,11 @@ def resend_verification():
     """
 
     sent = send_email(
-            mail,
-            subject="Verify Your Email - Sehatra",
-            recipients=[email],
-            html_body=html
-            )
+    subject="Verify Your Email - Sehatra",
+    to_email=email,
+    html=html
+)
+
 
     if not sent:
         return render_template(

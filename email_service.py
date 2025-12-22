@@ -1,14 +1,17 @@
-from flask_mail import Message
+import os
+import resend
 
-def send_email(mail, subject, recipients, html_body):
+resend.api_key = os.getenv("RESEND_API_KEY")
+
+def send_email(subject, to, html):
     try:
-        msg = Message(
-            subject=subject,
-            recipients=recipients,
-            html=html_body
-        )
-        mail.send(msg)
+        resend.Emails.send({
+            "from": "Sehatra <onboarding@resend.dev>",
+            "to": [to],
+            "subject": subject,
+            "html": html
+        })
         return True
     except Exception as e:
-        print("Email error:", e)
+        print("Resend error:", e)
         return False
