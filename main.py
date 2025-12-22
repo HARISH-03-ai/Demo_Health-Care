@@ -438,38 +438,42 @@ def signup():
         return render_template("signup.html", error="Phone already registered")
 
     token = str(uuid.uuid4())
-
-    user = User(
-        name=name,
-        email=email,
-        phone=phone,
-        password=generate_password_hash(password),
-        verification_token=token,
-        is_verified=False
-    )
-
-    db.session.add(user)
-    db.session.commit()
-
+    
     verify_link = request.host_url.rstrip("/") + "/verify/" + token
-
+    
     html = f"""
-    <h3>Verify Your Email</h3>
-    <p>Click below to verify your account:</p>
-    <a href="{verify_link}"
-       style="padding:10px 15px;background:#ae3a00;color:white;
-              text-decoration:none;border-radius:5px;">
-       Verify Email
-    </a>
-    """
-
+<h3>Verify Your Email</h3>
+<p>Click below to verify your account:</p>
+<a href="{verify_link}">Verify Email</a>
+"""
     sent = send_email(
     subject="Verify your email",
     to_email=email,
     html=html
-)
+    )
+    
     if not sent:
-        return render_template("signup.html", error="Email service busy, try again")
+        return render_template(
+        "signup.html",
+        error="Email service busy. Please try again."
+    )
+
+# ✅ ONLY AFTER EMAIL SUCCESS
+    user = User(
+    name=name,
+    email=email,
+    phone=phone,
+    password=generate_password_hash(password),
+    verification_token=token,
+    is_verified=False
+)
+    db.session.add(user)
+    db.session.commit()
+    
+    return render_template(
+    "signup.html",
+    success="Account created! Please check your email."
+)
 
 
 
