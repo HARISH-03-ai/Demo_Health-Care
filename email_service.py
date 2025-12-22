@@ -1,13 +1,16 @@
 import os
 import resend
 
+# API key
 resend.api_key = os.getenv("RESEND_API_KEY")
 
-def send_email(subject, to, html):
+EMAIL_FROM = os.getenv("EMAIL_FROM", "Sehatra <onboarding@resend.dev>")
+
+def send_email(subject, to_email, html):
     try:
-        resend.Emails.send({
-            "from": "Sehatra <onboarding@resend.dev>",
-            "to": [to],
+        resend.emails.send({
+            "from": EMAIL_FROM,
+            "to": [to_email],
             "subject": subject,
             "html": html
         })
